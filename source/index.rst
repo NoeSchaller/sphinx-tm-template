@@ -12,7 +12,7 @@ Titre du travail de maturité
 
     introduction.md
     chapitre-01.md
-    todo.rst
+    chapitre-02.md
 
 ..  toctree::
     :maxdepth: 2

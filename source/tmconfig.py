@@ -1,15 +1,15 @@
 class TMConfig:
 
-    title = u'Titre du TM'
-    first_name = 'Prénom'
-    last_name = 'Nom'
+    title = u'Simulation Web du robot MacQueen'
+    first_name = 'Noé'
+    last_name = 'Schaller'
     author = f'{first_name} {last_name}'
     year = u'2022'
     month = u'Janvier'
     seminary_title = u'Développement d’outils ou matériel d’enseignement de l’informatique'
     tutor = u"Cédric Donner"
     release = "Version intermédiaire"
-    repository_url = "https://github.com/{your-docs-url}"
+    repository_url = "https://github.com/NoeSchaller/TM_Noe"
 
     @classmethod
     def date(cls):
