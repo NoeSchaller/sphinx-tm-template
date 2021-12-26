@@ -1,6 +1,16 @@
-# Titre du chapitre 2
+# Mode d'emploi
 
-## Titre 1
+## Mise en place
+
+### La classe simulation
+
+### Le document map.json
+
+## Contrôler les robots
+
+### L'i2c
+
+### Les pins
 
 ```{tip} Penser à clean des fois
 ``` 
@@ -26,7 +36,6 @@ align: left
 
 ```
 
-### Titre 2
 Un petit tableau ?
 ```{warning}
 le tableau est pour l'instant un échec

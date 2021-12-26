@@ -3,7 +3,7 @@
     You can adapt this file completely to your liking, but it should at least
     contain the root `toctree` directive.
 
-Titre du travail de maturité
+Développement d'un simulateur web du robot Maqueen
 ============================
 
 ..  toctree::
@@ -13,12 +13,8 @@ Titre du travail de maturité
     introduction.md
     chapitre-01.md
     chapitre-02.md
+    chapitre-03.md
 
-..  toctree::
-    :maxdepth: 2
-    :caption: Tutoriel Sphinx
-
-    tutoriel-sphinx/index.rst
 
 
 
