@@ -1,6 +1,6 @@
 (uneref)=
 # Phaser
-Phaser est un logiciel open source dévelopé depuis 2013 par Photon Storm qui permet de créer des interfaces graphiques 2D et coder leur interactions avec l'utilisateur dans le navigateur web ainsi que pour Android et iOS. Le logiciel fonctionne en HTML5 et peut être utiliser à l'aide de Javascript et de Typescript [^sou]
+Phaser est un logiciel open source dévelopé et maintenu par Photon Storm depuis 2013 qui permet de créer des interfaces graphiques 2D et de coder leur interactions avec l'utilisateur dans le navigateur web ainsi que pour Android et iOS. Le logiciel fonctionne dans un environnement HTML5 et peut être utilisé à l'aide de Javascript et de Typescript [^scr1] +plugin
 ## La classe game
 
 ## Les scènes
@@ -12,4 +12,4 @@ Phaser est un logiciel open source dévelopé depuis 2013 par Photon Storm qui p
 ## Les plugins
 
 
-[^sou]: oui
+[^scr1]: oui
