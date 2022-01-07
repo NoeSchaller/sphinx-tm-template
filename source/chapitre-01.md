@@ -26,7 +26,7 @@ game = new Game(config)
 ```
 Une fois cet objet Game créé, Phaser va créer les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des évenements se produisants.[^src3]
 ## Les scènes
-Une scène est un ensemble d'objets et de cameras qui sont traité par Phaser, elle sont principalement utilisées
+Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Chaque scène étant traité de manière complètement indépendante par Phaser il est possible de les utiliser pour représenter différents états ainsi que différents niveaux de profondeurs de notre simulateur.
 ### Les objets
 ### Les caméras
 
@@ -38,4 +38,5 @@ Une scène est un ensemble d'objets et de cameras qui sont traité par Phaser, e
 
 [^scr1]: PHOTON STORM "Welcome to Phaser 3" Consulté le 04 janvier 2022 <<https://phaser.io/phaser3>>
 [^scr2]: PHOTON STORM "Phaser - HTML5 Game Framework" Consulté le 04 janvier 2022 <<https://github.com/photonstorm/phaser>>
-[^src3]: PHOTON STORM "Class: Game" Consulté le 04 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Game.html>>
+[^src3]: PHOTON STORM "Class: Game" Consulté le 05 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Game.html>>
+[^src4]: PHOTON STROM "How Scenes Work" Consulté le 7 janvier 2022 <<https://phaser.io/phaser3/contributing/part5>>
