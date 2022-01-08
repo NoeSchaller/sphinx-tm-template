@@ -17,20 +17,17 @@ var config = {
     backgroundColor: 0x0000ff
     }
 
-// Création d'un dictionnaire contenant les paramètres souhaité
-// La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles
-
 game = new Game(config)
-
-// Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu
-// En plus d'éviter d'avoir à se préoccuper de l'ordre des clés du dictionnaire il est très aisé d'identifié l'effet de chaqu'une des données
 ```
 ```{admonition} Commentaire
 ---
 class: info
 ---
 **Lignes 1-6**: Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu  
-**Lignes **
+La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles  
+**Ligne 8**: Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu
+En plus d'éviter d'avoir à se préoccuper de l'ordre des clés du dictionnaire il est très aisé d'identifié l'effet de chaqu'une des données  
+
 ```
 
 
