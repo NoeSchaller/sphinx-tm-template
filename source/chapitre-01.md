@@ -26,7 +26,14 @@ game = new Game(config)
 ```
 Une fois cet objet Game créé, Phaser va créer les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des évenements se produisants.[^src3]
 ## Les scènes
-Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Chaque scène étant traité de manière complètement indépendante par Phaser il est possible de les utiliser pour représenter différents états ainsi que différents niveaux de profondeurs de notre simulateur.
+Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Une scène se définit à partir d'au moins 3 function: preload, create et update. Lorsque Phaser a terminer d'initialiser la classe Game, il lance
+
+
+
+
+
+
+Chaque scène étant traité de manière complètement indépendante par Phaser, il est possible de les utiliser pour représenter différents états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation: une sert de monde simulés et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne générent pas de collision avec les robots ou les murs, de plus comme chaque scène à sa pr
 ### Les objets
 ### Les caméras
 
