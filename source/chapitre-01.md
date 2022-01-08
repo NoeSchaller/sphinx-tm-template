@@ -4,9 +4,10 @@ Phaser est un logiciel open source développé et maintenu par Photon Storm depu
 ## La classe Game
 La racine de Phaser est la classe Game, c'est cette classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe Game pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique dictionnaire qui sera le seul paramètre de Game.  
 L'utilisation d'un dictionnaire à la place de plusieurs paramètres disctints à probablement pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire l'ordre des clés n'a pas d'importance (contrairement à l'utilisation multiples paramètres).  
-Les différentes clés permettent de choisir principalement la manière dont l'interface sera implémenté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>, 
+Les différentes clés permettent de choisir principalement la manière dont l'interface sera implémenté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
 ```{code-block} js
 ---
+linenos: true
 caption: Par exemple
 ---
 var config = {
@@ -24,10 +25,65 @@ game = new Game(config)
 // Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu
 // En plus d'éviter d'avoir à se préoccuper de l'ordre des clés du dictionnaire il est très aisé d'identifié l'effet de chaqu'une des données
 ```
+```{admonition} Commentaire
+---
+class: info
+---
+**Lignes 1-6**: Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu  
+**Lignes **
+```
+
+
+
+
 Une fois cet objet Game créé, Phaser va créer les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des évenements se produisants.[^src3]
 ## Les scènes
-Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Une scène se définit à partir d'au moins 3 function: preload, create et update. Lorsque Phaser a terminer d'initialiser la classe Game, il lance
+Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Une scène se définit à partir d'au moins 4 function: constructor, preload, create et update. Lorsqu'une scene est lancée par Phaser procède ainsi:   
+1. La function preload charge les assets spécifiés dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible
+2. La fonction create met en place les objets et variables nécéssaires à cette scènes
+3. La fonction update est exécutée en boucle afin d'actualisé la scène.
+```{admonition} Note
+---
+class: tip
+---
+Le contructeur est pricipalement utile pour donner un nom (key dans le programme) à la scène afin de pouvoir s'y référer plus tard.
+```
+```{code-block} js
+---
+linenos: true
+caption: Par exemple
+---
+class Scene1 extends Phaser.Scene {
 
+    constructor() {
+        super('scene1')
+    }
+
+    // Le nom de la scène est maintenant 'scene1' et l'on pourra s'y référer ainsi: game.scene.keys.scene1
+
+    preload() {
+        this.load.image('picture', 'assets/pic.jpg')
+    };
+
+    // Une image indiquée par le chemin (relatif) 'assets/pic.jpg' est chargée dans la mémoire et on lui assigne le nom 'picture'
+
+    create() {
+        var une_image = this.add.image(100,100,'picture')
+    };
+
+    // L'image 'picture' est ajoutée dans la scène aux coordonnées 100,100 
+    // ATTENTION L'image n'a ici pas corps physique car 
+
+    update() {
+        une_image.x += 1
+    };
+}
+
+
+var config = {
+    scene: [Scene1]
+    }
+```
 
 
 
