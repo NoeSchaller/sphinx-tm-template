@@ -1,11 +1,11 @@
 (uneref)=
 # Phaser
-Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (pricipalement des jeux) et de coder leur interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et iOS mais cela nécéssite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilisé la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté.[^scr1][^scr2]
+Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (principalement des jeux) et de coder leurs interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et iOS mais cela nécessite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilise la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté.[^scr1][^scr2]
 
 ## La classe Game
 La racine de Phaser est la classe Game, c'est cette classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe Game pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique dictionnaire qui sera le seul paramètre de Game.  
-L'utilisation d'un dictionnaire à la place de plusieurs paramètres disctints à probablement pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire l'ordre des clés n'a pas d'importance (contrairement à l'utilisation multiples paramètres).  
-Les différentes clés permettent de choisir principalement la manière dont l'interface sera implémenté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
+L'utilisation d'un dictionnaire à la place de plusieurs paramètres distincts a probablement pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres).  
+Les différentes clés permettent de choisir principalement la manière dont l'interface sera **implémentée** à l'ensemble de la page ainsi que certaines configurations de base **tel** que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
 
 ```{code-block} js
 ---
@@ -25,31 +25,31 @@ game = new Game(config)
 ---
 class: info
 ---
-Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu  
+Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.  
 
 **Lignes 1-6:**
-- La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles
+- La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
   
 **Ligne 8:**
-- Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu
-- En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire reand aussi plus aisé d'identifié l'effet de chaqu'une des données
+- Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.
+- En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire permet aussi d'identifier plus aisément l'effet de chacune des données.
 ```
 
 
 
 
-Une fois cet objet Game créé, Phaser va créer les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des évenements se produisants.[^src3]
+Une fois cet objet Game créé, Phaser va mettre en place les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des événements se produisant.[^src3]
 
 ## Les scènes
-Une scène est un groupe d'objets et de cameras qui sont traité ensemble par Phaser. Une scène se définit à partir d'au moins 4 function: constructor, preload, create et update. Lorsqu'une scene est lancée par Phaser procède ainsi:   
-1. La function preload charge les assets spécifiés dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible
-2. La fonction create met en place les objets et variables nécéssaires à cette scènes
-3. La fonction update est exécutée en boucle afin d'actualisé la scène.
+Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins 4 fonctions: "constructor", "preload", "create" et "update". Lorsqu'une scène est lancée par Phaser, il procède ainsi:   
+1. La fonction "preload" charge les ressources spécifiées dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible.
+2. La fonction "create" met en place les objets et variables nécessaires à la scène qui lui correspond.
+3. La fonction "update" est exécutée en boucle afin d'actualiser la scène.
 ```{admonition} Note
 ---
 class: tip
 ---
-Le contructeur est pricipalement utile pour donner un nom (key dans le programme) à la scène afin de pouvoir s'y référer plus tard.
+Le constructeur est pricipalement utile pour donner un nom ("key" dans le programme) à la scène afin de pouvoir s'y référer plus tard.
 ```
 ```{code-block} js
 ---
@@ -83,12 +83,12 @@ game = new Game(config)
 ---
 class: info
 ---
-Ce code crée un jeu avec une scène vide  
-Super() sert à donner une clé de référence à la scène
-À présent on peut référer la scène de cette manière: game.scene.keys.scene1
+Ce code crée un jeu avec une scène vide.  
+Super() sert à donner une clé de référence à la scène.
+On peut dès lors référer la scène de cette manière: game.scene.keys.scene1
 ```
-Chaque scène est traité de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation: une sert de monde simulés et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne générent pas de collision avec les robots ou les murs, de plus comme chaque scène à sa propre caméra l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
-La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commander qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
+Chaque scène est traitée de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne génèrent pas de collision avec les robots ou les murs, de plus comme chaque scène a sa propre caméra l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
+La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
 
 ### Les objets
 Les objets 
