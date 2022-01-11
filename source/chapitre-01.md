@@ -5,7 +5,7 @@ Phaser est un logiciel open source développé et maintenu par Photon Storm depu
 ## La classe Game
 La racine de Phaser est la classe Game, c'est cette classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe Game pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique dictionnaire qui sera le seul paramètre de Game.  
 L'utilisation d'un dictionnaire à la place de plusieurs paramètres distincts a probablement pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres).  
-Les différentes clés permettent de choisir principalement la manière dont l'interface sera **implémentée** à l'ensemble de la page ainsi que certaines configurations de base **tel** que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
+Les différentes clés permettent de choisir principalement la manière dont l'interface sera implémenté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
 
 ```{code-block} js
 ---
@@ -19,7 +19,7 @@ var config = {
     backgroundColor: 0x0000ff
     }
 
-game = new Game(config)
+game = new Phaser.Game(config)
 ```
 ```{admonition} Commentaire
 ---
@@ -77,7 +77,7 @@ var config = {
     scene: [Scene1]
     };
 
-game = new Game(config)
+game = new Phaser.Game(config)
 ```
 ```{admonition} Commentaire
 ---
@@ -91,8 +91,42 @@ Chaque scène est traitée de manière complètement indépendante par Phaser, e
 La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
 
 ### Les objets
-Les objets 
-### Les caméras
+Les objets de Phaser sont les seuls élements (en dehors du background) qui apparaissent à l'écran et ce sont avec eux que l'utilisateur peut interagir. Il ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
+```{code-block} js
+---
+linenos: true
+caption: Création d'un objet
+---
+class Scene1 extends Phaser.Scene {
+
+    constructor() {
+        super('scene1')
+    };
+
+    preload() {
+    };
+
+    create() {
+        var x = 300,
+            y = 300,
+            width = 100,
+            height = 100,
+            color = 0x00ff00
+
+        this.add.rectangle(x, y, width, height, color)
+    };
+
+    update() {
+    };
+};
+
+
+var config = {
+    scene: [Scene1]
+    };
+
+game = new Phaser.Game(config)
+```
 
 ## Les plugins
 ### Le raycasting
