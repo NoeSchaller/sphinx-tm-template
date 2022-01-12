@@ -40,6 +40,31 @@ Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par sec
 
 Une fois cet objet Game créé, Phaser va mettre en place les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des événements se produisant.[^src3]
 
+### La physique
+Phaser possède deux moteurs physique distincts: Arcade et Matter.
+Arcade est utilisé par défaut, il est plus léger que matter mais est également moins puissant. 
+```{code-block} js
+---
+linenos: true
+caption: Il est possible de changer de moteur ainsi
+---
+var config = {
+    physics: {
+        default: 'matter',
+        matter: {
+            debug: 1
+        }
+    }
+    };
+```
+```{admonition} Note
+---
+class: tip
+---
+Il est également possible de modifier des paramètres physique basique de cette manière et d'activer le sysème de debug comme je l'ai fait dans l'exemple.
+```
+Arcade ne permettant que des zones de collisions rectangulaires, il est plus appropié pour mon travail d'utiliser Matter. Ainsi le reste de l'introduction à Phaser se concentrera dessus. L'utilisation des deux moteurs n'est cependant pas très différentes et il est possible d'appliquer des procédés très semblables avec Arcade.
+
 ## Les scènes
 Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins 4 fonctions: "constructor", "preload", "create" et "update". Lorsqu'une scène est lancée par Phaser, il procède ainsi:   
 1. La fonction "preload" charge les ressources spécifiées dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible.
@@ -87,6 +112,14 @@ Ce code crée un jeu avec une scène vide.
 Super() sert à donner une clé de référence à la scène.
 On peut dès lors référer la scène de cette manière: game.scene.keys.scene1
 ```
+```{admonition} Avertissement
+---
+class: warning
+---
+Nous allons à partir de maintenant sous-entendre la plupart du code afin de pouvoir rester concis et mettre en évidence l'essentiel.  
+- Les fonctions "preload", "create" et "update", ne seront mentionnée seulement si elle contiennent du code.  
+- Les élements "class Scene1 extends Phaser.Scene", "game = new Phaser.Game(config)", le constructeur et la variable "config" ne seront pas répétés car ils ne subisse généralement pas de chagement majeur.
+```
 Chaque scène est traitée de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne génèrent pas de collision avec les robots ou les murs, de plus comme chaque scène a sa propre caméra l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
 La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
 
@@ -97,15 +130,6 @@ Les objets de Phaser sont les seuls élements (en dehors du background) qui appa
 linenos: true
 caption: Création d'un objet
 ---
-class Scene1 extends Phaser.Scene {
-
-    constructor() {
-        super('scene1')
-    };
-
-    preload() {
-    };
-
     create() {
         var x = 300,
             y = 300,
@@ -115,19 +139,22 @@ class Scene1 extends Phaser.Scene {
 
         this.add.rectangle(x, y, width, height, color)
     };
-
-    update() {
-    };
-};
-
-
-var config = {
-    scene: [Scene1]
-    };
-
-game = new Phaser.Game(config)
+```
+```{admonition} Commentaire
+---
+class: note
+---
+Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
+Nous avons ajouté un rectangle mais Phaser met à diposition beaucoup d'autre forme qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.
 ```
 
+```{admonition} Note
+---
+class: tip
+---
+Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
+```
+Il est toutefois important de noter que l'objet que nous venons d'ajouter n'est pas un
 ## Les plugins
 ### Le raycasting
 
