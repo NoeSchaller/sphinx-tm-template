@@ -99,8 +99,14 @@ class Scene1 extends Phaser.Scene {
 
 
 var config = {
-    scene: [Scene1]
-    };
+    scene: [Scene1],
+    physics: {
+        default: 'matter',
+        matter: {
+            debug: 1
+        }
+    }
+};
 
 game = new Phaser.Game(config)
 ```
@@ -123,7 +129,7 @@ Nous allons à partir de maintenant sous-entendre la plupart du code afin de pou
 Chaque scène est traitée de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne génèrent pas de collision avec les robots ou les murs, de plus comme chaque scène a sa propre caméra l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
 La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
 
-### Les objets
+## Les objets
 Les objets de Phaser sont les seuls élements (en dehors du background) qui apparaissent à l'écran et ce sont avec eux que l'utilisateur peut interagir. Il ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
 ```{code-block} js
 ---
@@ -154,7 +160,41 @@ class: tip
 ---
 Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
 ```
-Il est toutefois important de noter que l'objet que nous venons d'ajouter n'est pas un
+### Les objects visuels et physiques
+
+Il est toutefois important de noter que l'objet que nous venons d'ajouter n'est pas un object physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objects que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent être apparaitre visuellement mais ne pas créer de collsions, l'inverse est également vrai.  
+Pour l'ajouter au moteur physique il suffit de d'ajouter "matter" dans la commande comme suit: "this.matter.add.rectangle(x, y, width, height)".  
+Il n'est pas nécéssaire d'y ajouter une couleur car cet objet est uniquement traiter par Matter mais n'apparait pas à l'écran (sauf si le mode debug est actif).  
+Pour avoir un object visuel qui poosède une boîte de collision, il faut utiliser la fonction "this.matter.add.gameObject()". Cette fonction prend un ou deux paramètres:
+- Le premier est l'aspect visuel de la forme à ajouter.
+- Le second est la boîte de collision, si aucun paramètre n'est donné un rectangle qui contient la forme est ajouter.
+```{code-block} js
+---
+linenos: true
+caption: Exemple
+---
+create(){
+    var x = 300,
+        y = 300,
+        radius = 50,
+        color = 0xff0000
+
+    var cercle = this.matter.add.gameObject(
+        this.add.circle(x, y, radius, color),
+        this.matter.add.circle(x, y, radius)
+    )
+};
+```
+```{admonition} Commentaire
+---
+class: note
+---
+Ce code ajoute donc un cercle rouge d'un rayon de 50 pixels en {300,300}.  
+La ligne 9 est importante dans le cas d'un cercle, sans elle la zone de collision de l'objet "*cercle*" serait  un carré de 100 pixels de coté qui contiendrait le cercle rouge, cependant elle n'a aucune influence sur le rendu visuel. 
+```
+
+### Les méthodes
+
 ## Les plugins
 ### Le raycasting
 
