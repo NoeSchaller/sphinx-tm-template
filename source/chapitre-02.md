@@ -3,16 +3,19 @@
 ### La classe simulation
 Tout comme Phaser, la simulation se repose principalement sur une seule et unique classe: la classe simulation. Lancer la simulation ne nécéssite ne nécéssite donc que d'appeler celle-ci avec les bon paramètres.
 ```{code-block} js
-sim = new simulation(width, height, map)
+sim = new simulation(width, height, map, background)
 ```
 - width et height servent à définir les dimensions souhaitées de l'interface graphique.
 - map est chaîne de caractère, elle représente le chemin vers un document Json qui contient les intructions de mise en place de l'environnement du robot.
+- background est une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige.
 
 ### Le document Json
-Le document Json contient toute les informations nécéssaire à la simulation pour construire l'environnement virtuel, il peut donc contenir des commandes pour préparer:
+Le document Json contient toute les informations nécéssaire à la simulation pour construire l'environnement virtuel, il se divise en quatre partie qui représente les différents élements utilisables:
 - Des robots
-- Des obstacles (murs)
+- Des obstacles (des murs)
 - Des marquages au sol
+- Des images (qui sont également des marquages)
+Chaque object a sa
 ```{code-block} json
 ---
 caption: voici un exemple
@@ -20,16 +23,16 @@ linenos: true
 ---
 {
     "bots": [
-        "new botLight(this, 'bob', 400, 300)",
-        "new botLight(this, 'nb2', 100, 300, 45)"
+        "new botLight('N°1', 400, 300, 45)"
     ],
     "walls": [
-        "new wallRect(this, 600, 0, 800, 200)"
+        "new wallRect(600, 0, 200, 200)"
     ],
     "marks": [
-        "new markPic(this, 400, 100, 'test')",
-        "new markPic(this, 200, 100, 'test2')",
-        "new markRect(this, 0, 0, 100,100)"
+        "new markRect(0, 0, 100,100)"
+    ],
+    "pictures": [
+        "new Picture(400, 100, 'assets/irTest.png')"
     ]
 }
 ```
