@@ -1,6 +1,6 @@
 class TMConfig:
 
-    title = u'Simulation Web du robot MacQueen'
+    title = u'Simulation Web du robot Maqueen'
     first_name = 'Noé'
     last_name = 'Schaller'
     author = f'{first_name} {last_name}'

@@ -40,7 +40,7 @@ Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par sec
 
 Une fois cet objet Game créé, Phaser va mettre en place les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des événements se produisant.[^src3]
 
-### La physique
+### Les moteurs physiques
 Phaser possède deux moteurs physique distincts: Arcade et Matter.
 Arcade est utilisé par défaut, il est plus léger que matter mais est également moins puissant. 
 ```{code-block} js
