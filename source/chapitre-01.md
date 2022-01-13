@@ -163,9 +163,20 @@ Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "crea
 ### Les objects visuels et physiques
 
 Il est toutefois important de noter que l'objet que nous venons d'ajouter n'est pas un object physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objects que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent être apparaitre visuellement mais ne pas créer de collsions, l'inverse est également vrai.  
-Pour l'ajouter au moteur physique il suffit de d'ajouter "matter" dans la commande comme suit: "this.matter.add.rectangle(x, y, width, height)".  
+Pour l'ajouter au moteur physique il suffit de d'ajouter "matter" dans la commande comme suit:
+
+```{code-block} js
+this.matter.add.rectangle(x, y, width, height)
+```
+
 Il n'est pas nécéssaire d'y ajouter une couleur car cet objet est uniquement traiter par Matter mais n'apparait pas à l'écran (sauf si le mode debug est actif).  
-Pour avoir un object visuel qui poosède une boîte de collision, il faut utiliser la fonction "this.matter.add.gameObject()". Cette fonction prend un ou deux paramètres:
+Pour avoir un object visuel qui possède une boîte de collision, il faut utiliser la fonction suivante:
+
+```{code-block} js
+this.matter.add.gameObject()
+```
+
+Cette fonction prend un ou deux paramètres:
 - Le premier est l'aspect visuel de la forme à ajouter.
 - Le second est la boîte de collision, si aucun paramètre n'est donné un rectangle qui contient la forme est ajouter.
 ```{code-block} js
@@ -190,8 +201,33 @@ create(){
 class: note
 ---
 Ce code ajoute donc un cercle rouge d'un rayon de 50 pixels en {300,300}.  
-La ligne 9 est importante dans le cas d'un cercle, sans elle la zone de collision de l'objet "*cercle*" serait  un carré de 100 pixels de coté qui contiendrait le cercle rouge, cependant elle n'a aucune influence sur le rendu visuel. 
+La ligne 9 est importante dans le cas d'un cercle, sans elle la zone de collision de l'objet "*cercle*" serait  un carré de 100 pixels de coté qui contiendrait le cercle rouge, cependant elle n'a aucune influence sur le rendu visuel tant qu'il n'y a pas de collisions. 
 ```
+### Appeler un document
+
+Certains objects comme les images et les sprites sont basés sur des documents externe au code, il est donc nécessaire de charger ces document dans la mémoire pour pouvoir les utiliser plus tard. Pour ce faire on utilise, généralement dans la fonction "preload", la commande "this.load" suivi du type de document à charger. Par exemple, pour une image:
+
+```{code-block} js
+this.load.image()
+```
+
+En utilisant les paramètres suivant:  
+- Une chaîne de caractère désignant la clé dont l'on souhaite se servir pour faire référence à l'image plus tard.
+- Une chaîne de caractères indiquant le chemin de l'image choisie.
+
+```{code-block} js
+---
+linenos: true
+---
+preload(){
+    this.load.image('picture', 'assets/picture.png')
+};
+
+create(){
+    this.add.image(x, y, 'picture')
+};
+```
+Une fois de plus ce procédé n'est pas résérvé aux images mais est nécéssaire dès que le programme nécéssite un document externe au code.
 
 ### Les méthodes
 

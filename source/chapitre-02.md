@@ -1,9 +1,7 @@
 # Mode d'emploi
-
 ## Mise en place
-
 ### La classe simulation
-
+Tout comme 
 ### Le document map.json
 
 ## Contrôler les robots
@@ -11,6 +9,32 @@
 ### L'i2c
 
 ### Les pins
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
 
 ```{tip} Penser à clean des fois
 ``` 
