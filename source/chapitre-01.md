@@ -27,10 +27,10 @@ class: info
 ---
 Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.  
 
-**Lignes 1-6:**
+Lignes 1-6:
 - La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
   
-**Ligne 8:**
+Ligne 8:
 - Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.
 - En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire permet aussi d'identifier plus aisément l'effet de chacune des données.
 ```
@@ -151,13 +151,7 @@ caption: Création d'un objet
 class: note
 ---
 Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
-Nous avons ajouté un rectangle mais Phaser met à diposition beaucoup d'autre forme qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.
-```
-
-```{admonition} Note
----
-class: tip
----
+Nous avons ajouté un rectangle mais Phaser met à diposition beaucoup d'autre forme qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.  
 Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
 ```
 ### Les objects visuels et physiques
