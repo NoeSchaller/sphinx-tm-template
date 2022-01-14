@@ -10,29 +10,25 @@ sim = new simulation(width, height, map, background)
 - background est une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige.
 
 ### Le document Json
-Le document Json contient toute les informations nécéssaire à la simulation pour construire l'environnement virtuel, il se divise en quatre partie qui représente les différents élements utilisables:
+Le document Json contient toute les informations nécéssaire à la simulation pour construire l'environnement virtuel, il se divise en quatre partie qui représentent les différents élements utilisables:
 - Des robots
 - Des obstacles (des murs)
 - Des marquages au sol
-- Des images (qui sont également des marquages)
-Chaque object a sa
+- Des images (qui sont également des marquages)  
+Chaque objet a sa propre clé dans le fichier Json 
 ```{code-block} json
 ---
-caption: voici un exemple
+caption: voici un exemple de document "vide"
 linenos: true
 ---
 {
     "bots": [
-        "new botLight('N°1', 400, 300, 45)"
     ],
     "walls": [
-        "new wallRect(600, 0, 200, 200)"
     ],
     "marks": [
-        "new markRect(0, 0, 100,100)"
     ],
     "pictures": [
-        "new Picture(400, 100, 'assets/irTest.png')"
     ]
 }
 ```

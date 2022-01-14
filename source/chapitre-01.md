@@ -1,5 +1,5 @@
 (uneref)=
-# Phaser
+# Présentation de Phaser
 Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (principalement des jeux) et de coder leurs interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et iOS mais cela nécessite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilise la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté.[^scr1][^scr2]
 
 ## La classe Game
@@ -61,7 +61,7 @@ var config = {
 ---
 class: tip
 ---
-Il est également possible de modifier des paramètres physique basique de cette manière et d'activer le sysème de debug comme je l'ai fait dans l'exemple.
+Il est également possible de modifier des paramètres physique basique de cette manière et d'activer le sysème de debug comme fait dans l'exemple.
 ```
 Arcade ne permettant que des zones de collisions rectangulaires, il est plus appropié pour mon travail d'utiliser Matter. Ainsi le reste de l'introduction à Phaser se concentrera dessus. L'utilisation des deux moteurs n'est cependant pas très différentes et il est possible d'appliquer des procédés très semblables avec Arcade.
 
@@ -122,7 +122,7 @@ On peut dès lors référer la scène de cette manière: game.scene.keys.scene1
 ---
 class: warning
 ---
-Nous allons à partir de maintenant sous-entendre la plupart du code afin de pouvoir rester concis et mettre en évidence l'essentiel.  
+La plupart du code sera dès maintenant sous-entendu afin de pouvoir rester concis et mettre en évidence l'essentiel.  
 - Les fonctions "preload", "create" et "update", ne seront mentionnée seulement si elle contiennent du code.  
 - Les élements "class Scene1 extends Phaser.Scene", "game = new Phaser.Game(config)", le constructeur et la variable "config" ne seront pas répétés car ils ne subisse généralement pas de chagement majeur.
 ```
@@ -151,12 +151,12 @@ caption: Création d'un objet
 class: note
 ---
 Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
-Nous avons ajouté un rectangle mais Phaser met à diposition beaucoup d'autre forme qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.  
+Dans cet exemple c'est un rectangle qui est ajouté mais Phaser met à diposition beaucoup d'autre forme qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.  
 Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
 ```
-### Les objects visuels et physiques
+### Les objets visuels et physiques
 
-Il est toutefois important de noter que l'objet que nous venons d'ajouter n'est pas un object physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objects que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent être apparaitre visuellement mais ne pas créer de collsions, l'inverse est également vrai.  
+Il est toutefois important de noter que l'objet que qui vient d'être ajouté n'est pas un objet physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objets que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent être apparaitre visuellement mais ne pas créer de collsions, l'inverse est également vrai.  
 Pour l'ajouter au moteur physique il suffit de d'ajouter "matter" dans la commande comme suit:
 
 ```{code-block} js
@@ -164,7 +164,7 @@ this.matter.add.rectangle(x, y, width, height)
 ```
 
 Il n'est pas nécéssaire d'y ajouter une couleur car cet objet est uniquement traiter par Matter mais n'apparait pas à l'écran (sauf si le mode debug est actif).  
-Pour avoir un object visuel qui possède une boîte de collision, il faut utiliser la fonction suivante:
+Pour avoir un objet visuel qui possède une boîte de collision, il faut utiliser la fonction suivante:
 
 ```{code-block} js
 this.matter.add.gameObject()
@@ -199,7 +199,7 @@ La ligne 9 est importante dans le cas d'un cercle, sans elle la zone de collisio
 ```
 ### Appeler un document
 
-Certains objects comme les images et les sprites sont basés sur des documents externe au code, il est donc nécessaire de charger ces document dans la mémoire pour pouvoir les utiliser plus tard. Pour ce faire on utilise, généralement dans la fonction "preload", la commande "this.load" suivi du type de document à charger. Par exemple, pour une image:
+Certains objets comme les images et les sprites sont basés sur des documents externe au code, il est donc nécessaire de charger ces document dans la mémoire pour pouvoir les utiliser plus tard. Pour ce faire on utilise, généralement dans la fonction "preload", la commande "this.load" suivi du type de document à charger. Par exemple, pour une image:
 
 ```{code-block} js
 this.load.image()
