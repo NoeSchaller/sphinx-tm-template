@@ -5,16 +5,16 @@ Tout comme Phaser, la simulation se repose principalement sur une seule et uniqu
 ```{code-block} js
 sim = new simulation(width, height, map, background)
 ```
-- width et height servent à définir les dimensions souhaitées de l'interface graphique.
-- map est chaîne de caractère, elle représente le chemin vers un document Json qui contient les intructions de mise en place de l'environnement du robot.
-- background est une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige.
+* width et height servent à définir les dimensions souhaitées de l'interface graphique.
+* map est chaîne de caractère, elle représente le chemin vers un document Json qui contient les intructions de mise en place de l'environnement du robot.
+* background est une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige.
 
 ### Le document Json
 Le document Json contient toute les informations nécéssaire à la simulation pour construire l'environnement virtuel, il se divise en quatre partie qui représentent les différents élements utilisables:
-- Des robots
-- Des obstacles (des murs)
-- Des marquages au sol
-- Des images (qui sont également des marquages)  
+* Des robots
+* Des obstacles (des murs)
+* Des marquages au sol
+* Des images (qui sont également des marquages)  
 Chaque objet a sa propre clé dans le fichier Json 
 ```{code-block} json
 ---
@@ -34,6 +34,11 @@ linenos: true
 ```
 Chaque type d'élements est donc représenté par une liste, pour y ajouter un objet il suffit d'utiliser dans la bonne liste la commande qui correspond à l'object.
 
+```
+
+
+
+```
 ## Contrôler les robots
 
 ### L'i2c
@@ -50,37 +55,6 @@ Chaque type d'élements est donc représenté par une liste, pour y ajouter un o
 .  
 .  
 .  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-
-```{tip} Penser à clean des fois
-``` 
-
-```{code-block} js
----
-linenos: true
-caption: ceci est un test
----
-for(let i = 0; i < 100; i++){
-    console.log('voila')
-};
-```
----
-% hmmmm...
->quote ?
 
 ```{figure} figures/turtle.png
 ---
@@ -89,9 +63,3 @@ align: left
 ---
 
 ```
-
-Un petit tableau ?
-```{warning}
-le tableau est pour l'instant un échec
-```
-Par contre les ref: {ref}`uneref`

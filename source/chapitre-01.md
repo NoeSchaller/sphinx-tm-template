@@ -171,8 +171,8 @@ this.matter.add.gameObject()
 ```
 
 Cette fonction prend un ou deux paramètres:
-- Le premier est l'aspect visuel de la forme à ajouter.
-- Le second est la boîte de collision, si aucun paramètre n'est donné un rectangle qui contient la forme est ajouter.
+* Le premier est l'aspect visuel de la forme à ajouter.
+* Le second est la boîte de collision, si aucun paramètre n'est donné un rectangle qui contient la forme est ajouter.
 ```{code-block} js
 ---
 linenos: true
@@ -206,8 +206,8 @@ this.load.image()
 ```
 
 En utilisant les paramètres suivant:  
-- Une chaîne de caractère désignant la clé dont l'on souhaite se servir pour faire référence à l'image plus tard.
-- Une chaîne de caractères indiquant le chemin de l'image choisie.
+* Une chaîne de caractère désignant la clé dont l'on souhaite se servir pour faire référence à l'image plus tard.
+* Une chaîne de caractères indiquant le chemin de l'image choisie.
 
 ```{code-block} js
 ---
