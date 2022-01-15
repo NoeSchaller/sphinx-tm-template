@@ -32,6 +32,8 @@ linenos: true
     ]
 }
 ```
+Chaque type d'élements est donc représenté par une liste, pour y ajouter un objet il suffit d'utiliser dans la bonne liste la commande qui correspond à l'object.
+
 ## Contrôler les robots
 
 ### L'i2c

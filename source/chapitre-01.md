@@ -28,11 +28,11 @@ class: info
 Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.  
 
 Lignes 1-6:
-- La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
+* La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
   
 Ligne 8:
-- Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.
-- En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire permet aussi d'identifier plus aisément l'effet de chacune des données.
+* Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.
+* En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire permet aussi d'identifier plus aisément l'effet de chacune des données.
 ```
 
 
@@ -123,8 +123,8 @@ On peut dès lors référer la scène de cette manière: game.scene.keys.scene1
 class: warning
 ---
 La plupart du code sera dès maintenant sous-entendu afin de pouvoir rester concis et mettre en évidence l'essentiel.  
-- Les fonctions "preload", "create" et "update", ne seront mentionnée seulement si elle contiennent du code.  
-- Les élements "class Scene1 extends Phaser.Scene", "game = new Phaser.Game(config)", le constructeur et la variable "config" ne seront pas répétés car ils ne subisse généralement pas de chagement majeur.
+* Les fonctions "preload", "create" et "update", ne seront mentionnée seulement si elle contiennent du code.  
+* Les élements "class Scene1 extends Phaser.Scene", "game = new Phaser.Game(config)", le constructeur et la variable "config" ne seront pas répétés car ils ne subisse généralement pas de chagement majeur.
 ```
 Chaque scène est traitée de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre pour les boutons tel que ceux qui gèrent la caméra. De cette manière les boutons ne génèrent pas de collision avec les robots ou les murs, de plus comme chaque scène a sa propre caméra l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
 La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
