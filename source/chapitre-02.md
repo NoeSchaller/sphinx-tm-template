@@ -90,7 +90,7 @@ Dès lors il est possible de choisir le point de vue de celle-ci à l'aide des b
 À partir de là, l'utilisateur peut user des robots créés comme il le souhaite à l'aide des commandes détaillées ci-dessous.
 
 ## Contrôler les robots
-Une fois que la simulation est créé, elle contient une liste nommée Light et dont les objets sont programmés pour contrôler les robots. Ainsi pour séléctionner un robot il faut aller le chercher dans cette liste.
+Une fois que la simulation est créé, elle contient une liste nommée Light et dont les objets sont programmés pour contrôler les robots. Ainsi pour séléctionner un robot il faut aller le chercher dans cette liste, les robots sont dans le même ordre dans cette liste que dans celle du document Json.
 ```{code-block} js
 sim.Light[0]
 ```
@@ -101,6 +101,47 @@ class: warning
 ---
 Il est supposé que la simulation est appelée sim dans cet exemple et dans tout les suivants.
 ```
+Une fois le robot séléctionné il ne reste qu'à choisir un des composants simuler du robot, en effet à l'image du Maqueen, le robot simulé possède également des commandes basées sur des pins et de l'i2c.
 ### L'i2c
+L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
+
+```{code-block} js
+write(adresse, byte)
+```
+* adresse: permet de choisir à quelle puce les bytes sont envoyés: les moteurs sont contrôler par la puce 0x10
+* byte: un objet Uint16Array(liste), la liste qu'il prend comme paramètre contient les bytes qui seront envoyés à la puce, les bytes prennent ce format:
+
+```{code-block} js
+Unit16Array([commande, dir1, puissance1, dir2, puissance2])
+```
+
+* commande: il y a deux valeure possible, 0x00 qui permet de modifier l'état du moteur gauche ou des deux et 0x02 qui ne modifie que le droit
+* dir: définit la direction du moteur, 0 pour le stopper, 1 pour aller vers l'avant et 2 pour reculer
+* puissance: la vitesse de rotation des moteurs
+
+```{admonition} Note
+---
+class: info
+---
+Si l'on ne modifie le statut que d'un moteur dir2 et puissance2 ne sont bien sûr pas nécéssaire
+```
+
+```{code-block} js
+---
+caption: Par exemple
+---
+sim.Light[0].i2c.write(0x10, new Uint16Array[0x00, 1, 3, 2, 2])
+```
+
+```{admonition} Commentaire
+---
+class: note
+---
+Ce code fait donc avancer la roue gauche à une vitesse de 3 et reculer la roue droite à une vitesse de 2
+```
 
 ### Les pins
+Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui on un caractère binaire, les pins et les actuateurs/capteurs sont associé de la manière suivante: les leds sont gérées par le pin8 (la gauche) et le pin12 (la droite), de manière similaires les pin13 (gauche) et pin14 (droite) gèrent les capteurs infrarouges.  
+Chaque pin est doté de deux fonction, l'une pour modifier son état et l'autre pour le lire.
+* digital_read(): retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
+* digital_write(bool): prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)
