@@ -121,7 +121,7 @@ Unit16Array([commande, dir1, puissance1, dir2, puissance2])
 
 ```{admonition} Note
 ---
-class: info
+class: tip
 ---
 Si l'on ne modifie le statut que d'un moteur dir2 et puissance2 ne sont bien sûr pas nécéssaire
 ```
@@ -130,7 +130,7 @@ Si l'on ne modifie le statut que d'un moteur dir2 et puissance2 ne sont bien sû
 ---
 caption: Par exemple
 ---
-sim.Light[0].i2c.write(0x10, new Uint16Array[0x00, 1, 3, 2, 2])
+sim.Light[0].i2c.write(0x10, new Uint16Array([0x00, 1, 3, 2, 2]))
 ```
 
 ```{admonition} Commentaire
@@ -141,7 +141,23 @@ Ce code fait donc avancer la roue gauche à une vitesse de 3 et reculer la roue 
 ```
 
 ### Les pins
-Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui on un caractère binaire, les pins et les actuateurs/capteurs sont associé de la manière suivante: les leds sont gérées par le pin8 (la gauche) et le pin12 (la droite), de manière similaires les pin13 (gauche) et pin14 (droite) gèrent les capteurs infrarouges.  
+Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui on un caractère binaire, les pins et les actuateurs/capteurs sont associé de la manière suivante:  
+Les leds sont gérées par le pin8 (la gauche) et le pin12 (la droite), de manière similaires les pin13 (gauche) et pin14 (droite) gèrent les capteurs infrarouges.  
 Chaque pin est doté de deux fonction, l'une pour modifier son état et l'autre pour le lire.
-* digital_read(): retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
-* digital_write(bool): prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)
+* read_digital(): retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
+* write_digital(bool): prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)  
+
+```{code-block} js
+---
+caption: Voici un exemple
+---
+sim.Light[0].pin8.write_digital(true)
+sim.Light[0].pin14.read_digital()
+```
+
+```{admonition} Commentaire
+---
+class: note
+---
+La première ligne "allume" la led gauche et la seconde retourne true si le capteur infrarouge droit se trouve au dessus d'un marquage ou d'une portion foncée d'une image
+```
