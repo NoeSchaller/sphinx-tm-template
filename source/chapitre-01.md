@@ -1,4 +1,3 @@
-(uneref)=
 # Présentation de Phaser
 Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (principalement des jeux) et de coder leurs interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et iOS mais cela nécessite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilise la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté. [^scr1][^scr2]
 
@@ -149,9 +148,10 @@ caption: Création d'un objet
 ---
 class: note
 ---
-Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
+* Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
 Dans cet exemple c'est un rectangle qui est ajouté, mais Phaser met à diposition beaucoup d'autres formes qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.  
-Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
+* "this" reprèsente ici la scène à laquelle le code appartient
+* Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
 ```
 ### Les objets visuels et physiques
 
@@ -223,6 +223,45 @@ create(){
 Une fois de plus, ce procédé n'est pas réservé aux images mais est nécessaire dès que le programme nécessite un document externe au code.
 
 ### Les méthodes
+
+Une fois un objet créé, il est souvent utile d'en modifier les attributs. Pour parvenir à ces fins, deux manières de procéder coexistent:
+* Utiliser une méthode mise à disposition par Phaser qui ira changer l'attribut souhaité.
+* Accéder directement à cet attribut et le modifier soit même.  
+
+```{code-block} js 
+---
+caption: Par exemple
+linenos: true
+---
+create(){
+    this.Rectangle = this.add.rectangle(100, 100, 50, 50, 0x0000ff)
+    this.Rectangle.setX(500)
+    this.Rectangle.x = 500
+};
+```
+
+```{admonition} Commentaire
+---
+class: note
+---
+Dans ce code les ligne 3 et 4 ont exactement un effet semblalbe (changer la coordonnée x du rectangle en 500).  
+Même si il est toujours possible d'utiliser les deux manières, cependant il existe certaines situations dans lesquelles la seconde méthode est plus agréable. La diddérence reste toutefois légère mais peut être plus marquée dans un code plus complexe.
+```
+
+```{code-block} js 
+---
+caption: Par exemple
+linenos: true
+---
+create(){
+    var Rectangle = this.add.rectangle(100, 100, 50, 50, 0x0000ff)
+};
+update(){
+    Rectangle.setX(Rectangle.x + 1)
+    Rectangle.x += 1
+};
+```
+Pour savoir quel méthode ou quel attribut utiliser, il est une fois de plus utile de se référer à la documentation de Phaser: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>
 
 ## Les plugins
 ### Le raycasting
