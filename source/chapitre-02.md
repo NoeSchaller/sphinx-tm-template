@@ -3,10 +3,11 @@
 ### La classe simulation
 Tout comme Phaser, la simulation repose principalement sur une seule et unique classe: la classe simulation. Lancer la simulation ne nécessite donc que d'appeler celle-ci avec les bons paramètres.
 ```{code-block} js
-sim = new simulation(width, height, map, background)
+sim = new simulation(width, height, id, map, background)
 ```
 * width et height: définissent les dimensions de l'interface graphique.
 * map:  une chaîne de caractère qui représente le chemin vers un document Json qui contient les intructions de mise en place de l'environnement du robot.
+* id: l'id d'un élement canvas dans le code HTML
 * background: une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige.
 
 ### Le document Json
