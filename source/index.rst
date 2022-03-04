@@ -14,7 +14,6 @@ Développement d'un simulateur web du robot Maqueen
     chapitre-01.md
     chapitre-02.md
     chapitre-03.md
-    glossaire.md
     bibliographie.md
 
 
