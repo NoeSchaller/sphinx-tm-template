@@ -2,9 +2,7 @@
 Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (principalement des jeux) et de coder leurs interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et iOS mais cela nécessite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilise la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté. [^scr1][^scr2]
 
 ## La classe Game
-La racine de Phaser est la classe Game, c'est cette classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe Game pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique dictionnaire qui sera le seul paramètre de Game.  
-L'utilisation d'un dictionnaire à la place de plusieurs paramètres distincts a probablement pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres).  
-Les différentes clés permettent de choisir principalement la manière dont l'interface sera implémenté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées ici : <https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>.
+La racine de Phaser est la classe `Game`, il s'agit de la classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe `Game` pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique dictionnaire qui sera le seul paramètre de Game. L'utilisation d'un objet à la place de plusieurs paramètres distincts a pour but de rendre ce processus plus simple et intuitif. En effet dans un dictionnaire, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres). Les différentes clés permettent de choisir principalement la manière dont l'interface sera ajouté à l'ensemble de la page ainsi que certaines configurations de base tel que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées par Phaser[^src4].
 
 ```{code-block} js
 ---
@@ -16,7 +14,7 @@ var config = {
     height: 700,
     fps: 60,
     backgroundColor: 0x0000ff
-    }
+}
 
 game = new Phaser.Game(config)
 ```
@@ -27,7 +25,7 @@ class: info
 Ce code crée un interface de 500 pixels sur 700 qui tourne à 60 images par seconde et possède un fond bleu.  
 
 Lignes 1-6:
-* La création d'une variable dédiée à ce dictionnaire n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
+* La création d'une variable dédiée à cet objet n'est pas obligatoire mais peut aider à rendre les paramètres plus lisibles.
   
 Ligne 8:
 * En plus d'éviter d'avoir à se préoccuper de l'ordre des clés, un dictionnaire permet aussi d'identifier plus aisément l'effet de chacune des données.
@@ -36,11 +34,11 @@ Ligne 8:
 
 
 
-Une fois cet objet Game créé, Phaser va mettre en place les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des événements se produisant. [^src3]
+Une fois cet objet `Game` créé, Phaser va mettre en place les différentes scènes puis entrer dans un cycle afin d'actualiser la page en fonction des événements se produisant. [^src3]
 
 ### Les moteurs physiques
 Phaser possède deux moteurs physique distincts: Arcade et Matter.
-Arcade est utilisé par défaut, il est plus léger que Matter mais est également moins puissant. 
+Arcade est utilisé par défaut. Il est plus léger que Matter mais est également moins puissant. 
 ```{code-block} js
 ---
 linenos: true
@@ -53,26 +51,26 @@ var config = {
             debug: 1
         }
     }
-    };
+};
 ```
 ```{admonition} Note
 ---
 class: tip
 ---
-Il est également possible de modifier des paramètres physiques basiques de cette manière et d'activer le sysème de debug comme fait dans l'exemple.
+Il est également possible de modifier des paramètres physiques basiques de cette manière et d'activer le sysème de debogage le montre l'exemple.
 ```
-Arcade ne permettant que des zones de collisions rectangulaires, il est plus appropié pour mon travail d'utiliser Matter. Ainsi le reste de l'introduction à Phaser se concentrera sur ce dernier. L'utilisation des deux moteurs n'est cependant pas très différentes et il est possible d'appliquer des procédés très semblables avec Arcade.
+Arcade ne permettant que des zones de collisions rectangulaires, il est plus appropié pour mon travail d'utiliser Matter. Ainsi, le reste de l'introduction à Phaser se concentrera sur ce dernier. L'utilisation des deux moteurs n'est cependant pas très différentes et il est possible d'appliquer des procédés très semblables avec Arcade.
 
 ## Les scènes
-Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins 4 fonctions: "constructor", "preload", "create" et "update". Lorsqu'une scène est lancée par Phaser, il procède ainsi:   
-1. La fonction "preload" charge les ressources spécifiées dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible.
-2. La fonction "create" met en place les objets et variables nécessaires à la scène qui lui correspond.
-3. La fonction "update" est exécutée en boucle afin d'actualiser la scène.
+Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins 4 fonctions: `constructor`, `preload`, `create` et `update`. Lorsqu'une scène est lancée par Phaser, il procède de la manière suivante:   
+1. La fonction `preload` charge les ressources spécifiées dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible.
+2. La fonction `create` met en place les objets et variables nécessaires à la scène qui lui correspond.
+3. La fonction `update` est exécutée en boucle afin d'actualiser la scène.
 ```{admonition} Note
 ---
 class: tip
 ---
-Le constructeur est principalement utile pour donner un nom ("key" dans le programme) à la scène afin de pouvoir s'y référer plus tard.
+Le constructeur est principalement utile pour donner un nom (`key` dans le programme) à la scène afin de pouvoir s'y référer plus tard.
 ```
 ```{code-block} js
 ---
@@ -112,30 +110,28 @@ game = new Phaser.Game(config)
 ---
 class: info
 ---
-Ce code crée un jeu avec une scène vide.  
-Super() sert à donner une clé de référence à la scène.
-On peut dès lors référer la scène de cette manière: game.scene.keys.scene1
+Ce code crée un jeu avec une scène vide, il est également possible d'en ajouter plusieurs. `Super()` sert à donner une clé de référence à la scène.
+On peut dès lors faire référence à la scène de la manière suivante: game.scene.keys.scene1
 ```
 ```{admonition} Avertissement
 ---
 class: warning
 ---
 La plupart du code sera dès maintenant sous-entendu afin de pouvoir rester concis et mettre en évidence l'essentiel.  
-* Les fonctions "preload", "create" et "update" ne seront mentionnées que si elle contiennent du code.  
-* Les élements "class Scene1 extends Phaser.Scene", "game = new Phaser.Game(config)", le constructeur et la variable "config" ne seront pas répétés car ils ne subissent généralement pas de changements majeurs.
+* Les fonctions `preload`, `create` et `update` ne seront mentionnées que si elle contiennent du code.  
+* Les élements `class Scene1 extends Phaser.Scene`, `game = new Phaser.Game(config)`, le constructeur et la variable `config` ne seront pas répétés car ils ne subissent généralement pas de changements majeurs.
 ```
-Chaque scène est traitée de manière complètement indépendante par Phaser, elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeurs de notre simulateur. Par exemple mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons tel que ceux qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs, de plus comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robots se déplace.[^src4]  
-La gestion des scènes se fait dans les scènes même, Phaser va systématiquement lancer la première scène de la liste. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (documentation ici: <https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>)
+Chaque scène est traitée de manière complètement indépendante par Phaser. Elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeur de notre simulateur. Par exemple, mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons tel que ceux qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs. De plus, comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robot se déplace [^src5]. La gestion des scènes se fait dans les scènes elles-mêmes, Phaser lance systématiquement la première scène de la liste lorsqu'il démarre. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (voir documentation[^scr6])
 
 ## Les objets
-Les objets de Phaser sont les seuls élements (en dehors du background) qui apparaissent à l'écran et c'est avec eux que l'utilisateur peut interagir. Ils ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
+Les objets de Phaser sont les seuls élements en dehors du arrière-fond qui apparaissent à l'écran et c'est avec eux que l'utilisateur peut interagir. Ils ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
 ```{code-block} js
 ---
 linenos: true
 caption: Création d'un objet
 ---
     create() {
-        var x = 300,
+        const x = 300,
             y = 300,
             width = 100,
             height = 100,
@@ -148,22 +144,18 @@ caption: Création d'un objet
 ---
 class: note
 ---
-* Ce code code place un carré vert de 100 pixels de côté aux coordonnées {300;300} (L'origine est par défaut au coin en haut à gauche).  
-Dans cet exemple c'est un rectangle qui est ajouté, mais Phaser met à diposition beaucoup d'autres formes qui sont listées ici: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html> et <https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>, chaque type d'objet à donc ses paramètres qui lui sont propres.  
-* "this" reprèsente ici la scène à laquelle le code appartient
-* Il est bien sûr possible d'ajouter des objets depuis d'autre fonction que "create", aucun outil n'est exclusif à l'un des trois états.
+* Ce code place un carré vert de 100 pixels de côté aux coordonnées (300;300. L'origine est par défaut au coin en haut à gauche. Dans cet exemple c'est un rectangle qui est ajouté, mais Phaser met à diposition beaucoup d'autres formes qui sont détaillées dans la  documentation[^src7][^src8]. Chaque type d'objet a donc des paramètres qui lui sont propres. 
+* Il est bien sûr possible d'ajouter des objets depuis d'autre fonctions que `create`.
 ```
 ### Les objets visuels et physiques
 
-Il est toutefois important de noter que l'objet que qui vient d'être ajouté n'est pas un objet physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objets que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent être apparaitre visuellement mais ne pas créer de collisions, l'inverse est également vrai.  
-Pour ajouter un objet au moteur physique, il suffit de d'ajouter "matter" dans la commande comme suit:
+Il est toutefois important de noter que l'objet qui vient d'être ajouté n'est pas un objet physique et n'est donc pas pris en compte par Matter. En effet il existe des différences entre les objets que Phaser affiche à l'écran et ceux  que Matter traite: certains peuvent apparaitre visuellement mais ne pas créer de collisions, l'inverse est également vrai. Pour ajouter un objet au moteur physique, il suffit d'ajouter "matter" à la commande, comme suit:
 
 ```{code-block} js
 this.matter.add.rectangle(x, y, width, height)
 ```
 
-Il n'est pas nécessaire d'y ajouter une couleur car cet objet est uniquement traiter par Matter mais n'apparait pas à l'écran (sauf si le mode debug est actif).  
-Pour avoir un objet visuel qui possède une boîte de collision, il faut utiliser la fonction suivante:
+Il n'est pas nécessaire d'y ajouter une couleur car cet objet est uniquement traité par Matter mais n'apparait pas à l'écran sauf si le mode de débogage est actif. Pour avoir un objet visuel qui possède une boîte de collision, il faut utiliser la fonction suivante:
 
 ```{code-block} js
 this.matter.add.gameObject()
@@ -171,7 +163,7 @@ this.matter.add.gameObject()
 
 Cette fonction prend un ou deux paramètres:
 * Le premier est l'aspect visuel de la forme à ajouter.
-* Le second est la boîte de collision, si aucun paramètre n'est donné un rectangle qui contient la forme est ajouté.
+* Le second est la boîte de collision. Si aucun paramètre n'est donné un rectangle qui contient la forme est ajouté.
 ```{code-block} js
 ---
 linenos: true
@@ -193,20 +185,19 @@ create(){
 ---
 class: note
 ---
-Ce code ajoute donc un cercle rouge d'un rayon de 50 pixels en {300,300}.  
-La ligne 9 est importante dans le cas d'un cercle, sans elle la zone de collision de l'objet "*cercle*" serait  un carré de 100 pixels de coté qui contiendrait le cercle rouge. Cependant elle n'a aucune influence sur le rendu visuel tant qu'il n'y a pas de collisions. 
+Ce code ajoute un cercle rouge d'un rayon de 50 pixels au point de coordonnées (300,300). La ligne 9 est importante dans le cas d'un cercle, car sans elle la zone de collision de l'objet `cercle` serait  un carré de 100 pixels de coté qui contiendrait le cercle rouge. Cependant elle n'a aucune influence sur le rendu visuel tant qu'il n'y a pas de collisions. 
 ```
 ### Appeler un document
 
-Certains objets comme les images et les sprites sont basés sur des documents externes au code, il est donc nécessaire de charger ces documents dans la mémoire pour pouvoir les utiliser plus tard. Pour ce faire, on utilise, généralement dans la fonction "preload", la commande "this.load" suivie du type de document à charger. Par exemple, pour une image:
+Certains objets comme les images et les sprites sont basés sur des documents externes au code. Il est donc nécessaire de charger ces documents dans la mémoire pour pouvoir les utiliser plus tard. Pour ce faire, on utilise, généralement dans la fonction `preload`, la commande `this.load` suivie du type de document à charger par exemple:
 
 ```{code-block} js
 this.load.image()
 ```
 
-En utilisant les paramètres suivants:  
+Cette commande utilise les paramètres suivants:  
 * Une chaîne de caractères désignant la clé dont l'on souhaite se servir pour faire référence à l'image plus tard.
-* Une chaîne de caractères indiquant le chemin de l'image choisie.
+* Une chaîne de caractères indiquant le chemin de l'image choisie dans le système de fichiers.
 
 ```{code-block} js
 ---
@@ -226,7 +217,7 @@ Une fois de plus, ce procédé n'est pas réservé aux images mais est nécessai
 
 Une fois un objet créé, il est souvent utile d'en modifier les attributs. Pour parvenir à ces fins, deux manières de procéder coexistent:
 * Utiliser une méthode mise à disposition par Phaser qui ira changer l'attribut souhaité.
-* Accéder directement à cet attribut et le modifier soit même.  
+* Accéder directement à cet attribut et le modifier soi-même.  
 
 ```{code-block} js 
 ---
@@ -244,8 +235,8 @@ create(){
 ---
 class: note
 ---
-Dans ce code les ligne 3 et 4 ont exactement un effet semblalbe (changer la coordonnée x du rectangle en 500).  
-Même si il est toujours possible d'utiliser les deux manières, cependant il existe certaines situations dans lesquelles la seconde méthode est plus agréable. La diddérence reste toutefois légère mais peut être plus marquée dans un code plus complexe.
+Dans ce code les ligne 3 et 4 ont exactement un effet semblable: changer la coordonnée x du rectangle en 500.  
+Même si il est toujours possible d'utiliser les deux manières, cependant il existe certaines situations dans lesquelles la seconde méthode est plus agréable. La différence reste toutefois légère mais peut être plus marquée dans un code plus complexe.
 ```
 
 ```{code-block} js 
@@ -261,7 +252,7 @@ update(){
     Rectangle.x += 1
 };
 ```
-Pour savoir quel méthode ou quel attribut utiliser, il est une fois de plus utile de se référer à la documentation de Phaser: <https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>
+Les différents attributs et méthodes sont documentés par Phaser[^src9].
 
 ## Les plugins
 ### Le raycasting
@@ -272,4 +263,9 @@ Pour savoir quel méthode ou quel attribut utiliser, il est une fois de plus uti
 [^scr1]: PHOTON STORM "Welcome to Phaser 3" Consulté le 04 janvier 2022 <<https://phaser.io/phaser3>>
 [^scr2]: PHOTON STORM "Phaser - HTML5 Game Framework" Consulté le 04 janvier 2022 <<https://github.com/photonstorm/phaser>>
 [^src3]: PHOTON STORM "Class: Game" Consulté le 05 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Game.html>>
-[^src4]: PHOTON STROM "How Scenes Work" Consulté le 7 janvier 2022 <<https://phaser.io/phaser3/contributing/part5>>
+[^src4]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>>
+[^src5]: PHOTON STROM "How Scenes Work" Consulté le 7 janvier 2022 <<https://phaser.io/phaser3/contributing/part5>>
+[^scr6]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>>
+[^src7]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html>>
+[^src8]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>>
+[^src9]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>>
