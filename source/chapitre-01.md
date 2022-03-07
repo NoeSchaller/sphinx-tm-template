@@ -121,7 +121,9 @@ La plupart du code sera dès maintenant sous-entendu afin de pouvoir rester conc
 * Les fonctions `preload`, `create` et `update` ne seront mentionnées que si elle contiennent du code.  
 * Les élements `class Scene1 extends Phaser.Scene`, `game = new Phaser.Game(config)`, le constructeur et la variable `config` ne seront pas répétés car ils ne subissent généralement pas de changements majeurs.
 ```
-Chaque scène est traitée de manière complètement indépendante par Phaser. Elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeur de notre simulateur. Par exemple, mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons tel que ceux qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs. De plus, comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robot se déplace [^src5]. La gestion des scènes se fait dans les scènes elles-mêmes, Phaser lance systématiquement la première scène de la liste lorsqu'il démarre. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (voir documentation[^scr6])
+Chaque scène est traitée de manière complètement indépendante par Phaser. Elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeur de notre simulateur. Par exemple, mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons tel que ceux qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs. De plus, comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robot se déplace [^src5].
+
+La gestion des scènes se fait dans les scènes elles-mêmes, Phaser lance systématiquement la première scène de la liste lorsqu'il démarre. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (voir documentation[^scr6])
 
 ## Les objets
 Les objets de Phaser sont les seuls élements en dehors du arrière-fond qui apparaissent à l'écran et c'est avec eux que l'utilisateur peut interagir. Ils ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
@@ -144,7 +146,9 @@ caption: Création d'un objet
 ---
 class: note
 ---
-* Ce code place un carré vert de 100 pixels de côté aux coordonnées (300;300. L'origine est par défaut au coin en haut à gauche. Dans cet exemple c'est un rectangle qui est ajouté, mais Phaser met à diposition beaucoup d'autres formes qui sont détaillées dans la  documentation[^src7][^src8]. Chaque type d'objet a donc des paramètres qui lui sont propres. 
+* Ce code place un carré vert de 100 pixels de côté aux coordonnées (300;300. L'origine est par défaut au coin en haut à gauche. Dans cet exemple c'est un rectangle qui est ajouté, mais Phaser met à diposition beaucoup d'autres formes qui sont détaillées dans la  documentation[^src7][^src8].
+
+Chaque type d'objet a donc des paramètres qui lui sont propres. 
 * Il est bien sûr possible d'ajouter des objets depuis d'autre fonctions que `create`.
 ```
 ### Les objets visuels et physiques
