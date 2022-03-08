@@ -63,25 +63,26 @@ Les lignes 30-38 mettent en place un plugin qui servira à simuler les capteurs 
 * La ligne 35 indique à Phaser la manière de mettre en place le plugin
 ```
 
-## La scène Simul
-### Le contructeur
+## La scène principale
 
 La premère scène lancée par Phaser est la scène `Simul`. Comme cette scène met en place l'environemment du robots il est donc logique que les autres scènes démarre après pour qu'elle puissent s'adapter aux éléments déjà en place.
+
+### Le contructeur
 
 ``` {code-block} js
 ---
 linenos: true
 ---
-  constructor(that, mapLoad, mapCreate, mode) {
-    super("simulation");
-    this.mapLoad = mapLoad;
-    this.mapCreate = mapCreate;
-    this.parent = that;
-    this.mode = mode;
-  }
+constructor(that, mapLoad, mapCreate, mode) {
+  super("simulation");
+  this.mapLoad = mapLoad;
+  this.mapCreate = mapCreate;
+  this.parent = that;
+  this.mode = mode;
+}
 ```
 
-Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérité de la classe `game`: `mapLoad` et `mapCreate` correspond aux fonctions définie par l'utilisateur, `that` représente la classe `game` elle même, `this.parent` sera surtout utilisé pour que les éléments de la simulation puissent s'ajouter aux différentes listes de la classe `simulation`.
+Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérité de la classe `game`: `mapLoad` et `mapCreate` correspondent aux fonctions définie par l'utilisateur, `that` représente la classe `game` elle même, `this.parent` sera surtout utilisé pour que les éléments de la simulation puissent s'ajouter aux différentes listes de la classe `simulation`.
 
 ### La fonction preload
 
@@ -91,29 +92,135 @@ La fonction preload charge les ressources nécéssaire pour les robots et les é
 ---
 linenos: true
 ---
-  preload() {
-    this.load.json("liteShape", "assets/liteShape.json");
-    this.load.json("plusShape", "assets/plusShape.json");
+preload() {
+  this.load.json("liteShape", "assets/liteShape.json");
+  this.load.json("plusShape", "assets/plusShape.json");
 
-    this.load.spritesheet("liteBodyPic", "assets/liteBody.png", {
-      frameWidth: 80,
-      frameHeight: 80,
-    });
-    this.load.spritesheet("plusBodyPic", "assets/plusBody.png", {
-      frameWidth: 100,
-      frameHeight: 103,
-    });
+  this.load.spritesheet("liteBodyPic", "assets/liteBody.png", {
+    frameWidth: 80,
+    frameHeight: 80,
+  });
+  this.load.spritesheet("plusBodyPic", "assets/plusBody.png", {
+    frameWidth: 100,
+    frameHeight: 103,
+  });
 
-    this.mapLoad(this);
-  }
+  this.mapLoad(this);
+}
 ```
 
 Le programme charge des documents JSON qui contiennent les informations quant à la forme des zone de collisions des robots aux lignes 2 et 3 ainsi que des sprites pour leur aspect visuel.
-``mapLoad`` est également exécutée et charge les fichiers nécessaire à l'utilisateur avec comme argument la scène principale de la simulation
+`mapLoad` est également exécutée et charge les fichiers nécessaire à l'utilisateur avec comme argument la scène principale de la simulation
 
 ### La fonction create
 
-La fonction permet principalement de mettre en place 
+La fonction a deux fonction principales:
+* exécuter la fonction `mapCreate` et donc mettre en place l'environnement des robots
+* démarrer les autres scènes nécéssaire au programme
+
+``` {code-block} js
+---
+linenos: true
+---
+create() {
+  this.frame = 0;
+  this.marks = [];
+  this.walls = [];
+
+  this.matter.add.mouseSpring().constraint.stiffness = 0.0005;
+
+  this.mapCreate(this);
+
+  if (this.mode) {
+    this.scene.launch("setup", this);
+  }
+  this.scene.launch("overlay", this);
+}
+```
+
+La ligne 8 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 13 lance la scène nommée  `overlay`. Le second argument, `this`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
+
+### La fonction update
+
+Le seul usage de la fonction `update` est de constamment mettre à jour les robots. Ce sont les seuls éléments concernés car ces sont les seuls éléments à interagir avec d'autres. De plus, la plupart des composants du robots ne sont pas attaché à ce dernier: Phaser ne le pertmettant pas aisément et doivent donc être replacé relativement au robot à chaque actualisation de la simulation.
+
+``` {code-block} js
+---
+linenos: true
+---
+update() {
+  for (let i = 0; i < this.parent.robots.length; i++) {
+    this.parent.robots[i].update();
+  }
+  this.frame++;
+}
+```
+
+Les lignes 2 à 4 du code font une itération à travers la liste des robots et la ligne 3 actualise les différents robots.
+
+## La scène overlay
+
+La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui permet de la manipuler. La plupart de ces rôles sont pris en charge par la classe `CameraManager`. La création d'une scène dédiée à cet usage est toutefois essentielle car elle permet d'éviter d'avoir des interactions indésirables entre des éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter que l'interface se déplacer en même que la caméra puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
+
+### Le constructeur
+
+``` {code-block} js
+---
+linenos: true
+---
+constructor(parent, width, height) {
+    super('overlay');
+    this.parent = parent
+    this.height = height
+    this.width = width
+}
+```
+
+Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérité de la classe. `height` et `width` permetteront à l'interface de se placer dans les bord de la fenêtre et `parent` d'accéder au robots pour créer les bouttons qui gèrent la caméra en fonction des robots présents dans la simulation.
+ 
+### La fonction init
+
+``` {code-block} js
+---
+linenos: true
+---
+init(data) {
+  this.simulation = data
+}
+```
+
+### La fonction preload
+
+``` {code-block} js
+---
+linenos: true
+---
+preload() {
+  this.load.image('echelle', 'assets/scale.png')
+}
+```
+
+### La fonction create
+
+``` {code-block} js
+---
+linenos: true
+---
+preload() {
+  this.load.image('echelle', 'assets/scale.png')
+}
+```
+
+### La fonction update
+
+``` {code-block} js
+---
+linenos: true
+---
+update() {
+  this.camera.update(this.parent, this)
+}
+```
 
 ## Les éléments
 
