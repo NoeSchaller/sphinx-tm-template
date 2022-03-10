@@ -1,0 +1,13 @@
+écrit :
+    pas oublier les i2c
+    pas oubluer les méthodes dans mode d'emploi
+
+code:
+    optimiser les transfert d'informations
+    réécrire un peu Picture (angle)
+    réécrire SeeMark()
+    revoir les noms de variables
+    ajouter i2c.read
+    ajouter class zone
+    modifier l'emplacement des listes de murs/marques
+    modifier that.walls.push(this.body); -> push(this)

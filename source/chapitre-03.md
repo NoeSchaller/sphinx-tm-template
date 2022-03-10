@@ -250,15 +250,112 @@ La fonction `update` de la scène `overlay` sert simplement à actualiser la cam
 
 ## Les éléments
 
-### Les murs
+### Les constructeurs
 
-Les murs simulés sont des éléments statiques et dont la zone de collisions bloque celles des robots. L'éléments murs sont décliné en différentes classes afin de permettre un plus grande liberté par rapport à leur forme:
-* `wallRect` permet de crééer des murs retangulaires
-* `wall` permet de crééer des murs retangulaires
+Les différents éléments poosèdent tous des constructeurs très similaires, c'est pourquoi ils seront tous traités ensembles.
 
-### Les marques
+
+``` {code-block} js
+---
+caption: constructeur de `wallRect`
+---
+constructor(that, x, y, width, heigth, angle = 0) {
+  this.body = that.matter.add
+    .gameObject(that.add.rectangle(x, y, width, heigth, 0xff00000))
+    .setStatic(true)
+    .setAngle(angle);
+
+  that.walls.push(this.body);
+}
+```
+---
+``` {code-block} js
+---
+caption: constructeur de `wallCircle`
+---
+constructor(that, x, y, radius) {
+  this.body = that.matter.add
+    .gameObject(that.add.circle(x, y, radius, 0xff0000))
+    .setStatic(true)
+    .setFriction(1);
+
+    that.walls.push(this.body);
+}
+```
+---
+``` {code-block} js
+---
+caption: constructeur de `markRect`
+---
+constructor(that, x, y, width, height, angle = 0) {
+  this.pic = "geom";
+  this.body = that.matter.add
+    .gameObject(that.add.rectangle(x, y, width, height, 0x000000))
+    .setCollidesWith(0)
+    .setAngle(angle);
+
+  that.marks.push(this);
+}
+```
+---
+``` {code-block} js
+---
+caption: constructeur de `markCircle`
+---
+constructor(that, x, y, radius) {
+  this.pic = "geom";
+  this.body = that.matter.add
+    .gameObject(that.add.circle(x, y, radius, 0x000000))
+    .setCollidesWith(0);
+
+  that.marks.push(this);
+}
+```
+---
+``` {code-block} js
+---
+caption: constructeur de `Picture`
+---
+constructor(that, key, x, y, angle = 0) {
+  this.pic = key;
+  this.pos = { x: x, y: y };
+  this.scale = { x: 1, y: 1 };
+  this.body = that.matter.add
+    .image(x, y, key)
+    .setCollidesWith(0)
+    .setAngle(angle);
+
+  that.marks.push(this);
+}
+```
+---
+
+Le constructeur des différentes classes ne remplit que deux objectifs: le premier est de créer un object Phaser rectangulaire statique en fonction des paramètres introduit par l'utilisateur, le second est de s'ajouter à la liste des murs afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `pic` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image `pic` représente également la clef de l'image source.
+
+### Les méthodes
+
+``` {code-block} js
+setPosition(x, y) {
+  this.body.setPosition(x, y);
+}
+
+setAngle(deg) {
+  this.body.setAngle(deg);
+}
+
+setScale(x, y) {
+  this.body.setScale(x, y);
+}
+```
+Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
+
+## Les composants des robots
 
 ## Les robots
+#### Le constructeur
+##### Les méthodes
+#### Le constructeur
+##### Les méthodes
 
 ## La caméra
 
