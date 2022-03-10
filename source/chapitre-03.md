@@ -48,6 +48,7 @@ class simulation {
 }
 ```
 Ce code constitue l'intégralité de la classe simulation et il les deux but de la classe aisément indentifiable:
+* La ligne 16 indique à Phaser d'utiliser WEBGL plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tout les navigateurs, il est plus performant et tout de mêm très répandu.
 * Les lignes 11 créent des listes vides dans lesquelles s'ajouteront les différent éléments lorqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
 * Les lignes 12-40 initient l'interface Phaser en fonction des différents paramètres.
 
@@ -165,9 +166,6 @@ La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui
 ### Le constructeur
 
 ``` {code-block} js
----
-linenos: true
----
 constructor(parent, width, height) {
     super('overlay');
     this.parent = parent
@@ -181,23 +179,44 @@ Le contructeur de la scène s'occupe simplement de recevoir et stocker les diff�
 ### La fonction init
 
 ``` {code-block} js
----
-linenos: true
----
 init(data) {
   this.simulation = data
 }
 ```
 
+La fonction `init` permet de recevoir des informations lorsque la scène est initialisée. Contrairement au constructeur qui est appelé lors de la création de la classe `Game` cette fonction est appélée lorsque la scène démarre alors que le constructeur est appélé lorsque la scène est créée avant que la simulation ait démarrée.
+
+``` {code-block} js
+scene: [
+  new Simul(this, mapLoad, mapCreate, mode),
+  new Setup(width, height),
+  new Over(this, width, height),
+],
+```
+
+Par exemple dans ce code qui se trouve dans les paramètres de la classe `Game`, c'est le constructeur qui est appelé.
+
+``` {code-block} js
+this.scene.launch("overlay", this);
+```
+
+Cette ligne sert à initialiser la scène `overlay` depuis un autre scène les arguments suivants la clé de la scène à initialiser sont transmis à la fonction `init`.
+La fonction `init` est donc essentielle car est permet à la scène `overlay` de s'adapter au éléments présents dans la simulation. Ainsi dans ce cas, la fonction reçoit la scène principale et il lui sera donc possible d'en extraire les données nécessaires à la scène `overlay`
+
 ### La fonction preload
 
 ``` {code-block} js
----
-linenos: true
----
 preload() {
   this.load.image('echelle', 'assets/scale.png')
 }
+```
+
+L'image `echelle` est un segment de 100 pixels qui représente 10 centimètres dans l'espace simulé.
+
+```{image} ./figures/scale.png
+:alt: scale
+:width: 100px
+:align: center
 ```
 
 ### La fonction create
@@ -206,10 +225,15 @@ preload() {
 ---
 linenos: true
 ---
-preload() {
-  this.load.image('echelle', 'assets/scale.png')
+create() {
+  this.echelle = this.add.image(70, this.height - 30, 'echelle')
+  this.buttonsCam = []
+
+  this.camera = new CameraManager(this, this.simulation)
 }
 ```
+
+La fonction `create` met en place l'échelle à la ligne 2. Elle prépare également une liste vide nommée `buttonsCam` à la ligne suivante. Finalement la ligne 5 créée une occurence de la classe `CameraManager` qui s'occupera de gérer la caméra de la scène principale.
 
 ### La fonction update
 
@@ -222,9 +246,19 @@ update() {
 }
 ```
 
+La fonction `update` de la scène `overlay` sert simplement à actualiser la caméra, la fonction `CameraManager.update` est expliquée dans la section traitant de la classe `CameraManager`.
+
 ## Les éléments
 
-### Le robot lite
+### Les murs
+
+Les murs simulés sont des éléments statiques et dont la zone de collisions bloque celles des robots. L'éléments murs sont décliné en différentes classes afin de permettre un plus grande liberté par rapport à leur forme:
+* `wallRect` permet de crééer des murs retangulaires
+* `wall` permet de crééer des murs retangulaires
+
+### Les marques
+
+## Les robots
 
 ## La caméra
 
