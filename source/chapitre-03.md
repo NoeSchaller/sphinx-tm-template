@@ -350,12 +350,108 @@ setScale(x, y) {
 Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
 
 ## Les composants des robots
+### La classe motor
+#### Le constructeur
+##### Explications des paramètres
+``` {code-block} js
+constructor(
+  scene,
+  reference,
+  BotAngle,
+  x,
+  y,
+  width,
+  height,
+  point1,
+  point2,
+  powToSpeed
+)
+```
+* `scene`: la scène à laquelle le robot est ajouté
+* `reference`: l'objet Phaser auquel la roue doit être attachée
+* `Botangle`: l'angle du robot lorsqu'il est chargé
+* `x`: la coordonée en x de la roue par rapport à la position de `reference`
+* `y`: la coordonée en y de la roue par rapport à la position de `reference`
+* `width`: la largeur de la roue en pixel
+* `height`: la hauteur de la roue en pixel
+* `point1`: un objet Javascript ayant une clef x et un clef y, il représente un point d'attache pour la roue
+* `point2`: un objet Javascript ayant une clef x et un clef y, il représente un point d'attache pour la roue
+* `powToSpeed`: une fonction qui représente la croissance de la vitesse angulaire de la roue en fonction de la puissance
+
+#### Explications des paramètres calculés
+
+``` {code-block} js
+---
+linenos: true
+---
+constructor(
+  scene,
+  reference,
+  x,
+  y,
+  width,
+  height,
+  point1,
+  point2,
+  powToSpeed
+) {
+  this.scene = scene;
+  this.speed = 0;
+  this.power = 0;
+  this.dir = 0;
+  this.radius = height / 20;
+
+  if (powToSpeed === undefined) {
+    this.powToSpeed = function (power) {
+      return power;
+    };
+  } else {
+    this.powToSpeed = powToSpeed;
+  }
+
+  this.delta = Math.sqrt(x ** 2 + y ** 2);
+  let deltaPoint1 = Math.sqrt(point1.x ** 2 + point1.y ** 2);
+  let deltaPoint2 = Math.sqrt(point2.x ** 2 + point2.y ** 2);
+   if (x >= 0) {
+    this.relAngle = Math.atan(y / x);
+    this.startAngle = Math.atan(y / x) + (BotAngle / 180) * Math.PI;
+  } else {
+    this.relAngle = Math.PI + Math.atan(y / x);
+    this.startAngle = Math.PI + Math.atan(y / x) + (BotAngle / 180) * Math.PI;
+  }
+
+  if (point1.x >= 0) {
+    this.rotationPoint1 =
+      (BotAngle / 180) * Math.PI + Math.atan(point1.y / point1.x);
+  } else {
+    this.rotationPoint1 =
+      (BotAngle / 180 + 1) * Math.PI + Math.atan(point1.y / point1.x);
+  }
+
+  if (point2.x >= 0) {
+    this.rotationPoint2 =
+      (BotAngle / 180) * Math.PI + Math.atan(point2.y / point2.x);
+  } else {
+    this.rotationPoint2 =
+      (BotAngle / 180 + 1) * Math.PI + Math.atan(point2.y / point2.x);
+  }
+
+  let rotationWheel = (BotAngle / 180) * Math.PI;
+```
+
+Les variables `this.delta`, `deltaPoint1???` et `deltaPoint2???` représentent la distance entre la roue  
+
+### Les capteurs infrarouges
+
+### Les capteurs ultrasons
+
+### Les leds
+
+### Les i2c
+
+### Les pins
 
 ## Les robots
-#### Le constructeur
-##### Les méthodes
-#### Le constructeur
-##### Les méthodes
 
 ## La caméra
 
