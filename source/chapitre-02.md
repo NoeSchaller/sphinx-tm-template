@@ -93,15 +93,15 @@ Ce code ajoute une marque circulaire
 ---
 
 ``` {code-block} js
-new Picture(scene, picture, x, y, angle)
+new Picture(scene, key, x, y, scaleX, scaleY)
 ```
 Ce code ajoute image dont les zones foncées sont détectées comme des marques
 * `scene` : la scène dans laquelle ajouter l'élément, toujours la scène principale 
-* `picture` : la clé d'une image péalablement chargée dans la fonction `mapLoad`
+* `key` : la clé d'une image péalablement chargée dans la fonction `mapLoad`
 * `x` : la coordonnée horizontale de l'élément
 * `y` : la coordonnée verticale de l'élément
-* `angle` : l'angle de l'élément en degrés
-
+* `scaleX` : l'échelle horizontale de l'image
+* `scaleY` : l'échelle verticale de l'image
 ---
 
 ``` {code-block} js
@@ -149,11 +149,11 @@ L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule
 ```{code-block} js
 write(adresse, data)
 ```
-* adresse: permet de choisir à quelle puce les données sont envoyés: les moteurs sont contrôlés par la puce 0x10
-* data: un objet `Uint16Array(liste)`. La liste qu'il prend comme paramètre contient les octets de données qui seront envoyés à la puce, les données prennent ce format pour contrôler les moteurs:
+* `adresse`: permet de choisir à quelle puce les données sont envoyés: les moteurs sont contrôlés par la puce 0x10
+* `data`: une liste qui contient les octets de données qui seront envoyés à la puce, les données prennent ce format pour contrôler les moteurs:
 
 ```{code-block} js
-Unit16Array([commande, dir1, puissance1, dir2, puissance2])
+data = [commande, dir1, puissance1, dir2, puissance2]
 ```
 
 * `commande`: il y a deux valeurs possibles. 0x00 qui permet de modifier l'état du moteur gauche ou des deux et 0x02 qui ne modifie que le droit
@@ -171,7 +171,7 @@ Si l'on ne modifie le statut que d'un moteur, `dir2` et `puissance2` ne sont bie
 ---
 caption: Par exemple
 ---
-sim.robots[0].i2c.write(0x10, new Uint16Array([0x00, 1, 200, 2, 150]))
+sim.robots[0].i2c.write(0x10, [0x00, 1, 200, 2, 150])
 ```
 
 ```{admonition} Commentaire

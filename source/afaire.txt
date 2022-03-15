@@ -1,26 +1,15 @@
 écrit :
     pas oublier les i2c
     pas oubluer les méthodes dans mode d'emploi
+    écrire contrôler les robots
 
 code:
-    optimiser les transfert d'informations
     réécrire un peu Picture (angle)
     réécrire SeeMark()
-    revoir les noms de variables
     ajouter i2c.read
     ajouter class zone
-    écrire contrôler les robots
-    modifier l'emplacement des listes de murs/marques
-    modifier that.walls.push(this.body); -> push(this)
-    permettre d'utiliser les ultrasons
-    retirer tout les console.log()
     retirer les commentaires
-    retirer time à motor
-    revoir let/const
-    
-    !!!!!!!! utiliser math.atan2(Y, X) WTF js !?
-
-
-    moteur revoir (rotationPoint1 useless ???) + écrire
-
-    this.pin12 = new pin( this, "thid.robot.RLed.getOn()", "thid.robot.RLed.setOn()")
+    startAngle => startRotation
+    retirer robotRotation ligne 333, mettre direct en radiant dans les paramètres
+    retirer startAngle 
+    renommer delta => deltaOrigin
