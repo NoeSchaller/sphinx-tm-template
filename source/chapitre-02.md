@@ -129,6 +129,41 @@ Dès lors, il est possible de choisir le point de vue de celle-ci à l'aide des 
 ```
 À partir de là, l'utilisateur peut user des robots créés comme il le souhaite à l'aide des commandes détaillées ci-dessous.
 
+``` {code-block} js
+---
+linenos: true
+caption: Par exemple
+---
+function mapLoad(scene) {
+  scene.load.image("csud", "assets/Logo_csud.png");
+}
+
+function mapCreate(scene) {
+  new Picture(scene, "csud", 400, 100);
+
+  new wallRect(scene, 100, 200, 50, 200, 80);
+
+  new wallCircle(scene, 500, 400, 50);
+
+  new markRect(scene, 400, 500, 100, 100, 70);
+
+  new markCircle(scene, 200, 500, 20);
+
+  new maqueenPlus(scene, "N°1", 300, 300, 0);
+
+  new maqueenLite(scene, "N°2", 450, 300, 70);
+}
+
+sim = new simulation(600, 600, "game", mapLoad, mapCreate);
+```
+Ce code afficher la simularion dans un éléments HTML canvas dont l'id est `game`.
+
+```{image} ./figures/mapJs.png
+:alt: map.js
+:width: 600px
+:align: center
+```
+
 ## Contrôler les robots
 Une fois que la simulation est créé, elle contient une liste nommée `robots` et dont les objets sont programmés pour contrôler les robots. Ainsi, pour sélectionner un robot, il faut aller le chercher dans cette liste, les robots sont dans le même ordre dans cette liste dans la fonction `mapCreate`.
 ```{code-block} js
@@ -178,7 +213,7 @@ sim.robots[0].i2c.write(0x10, [0x00, 1, 200, 2, 150])
 ---
 class: note
 ---
-Ce code fait donc avancer la roue gauche à une puissance de 200 et reculer la roue droite à une puissance de 150
+Ce code fait avancer la roue gauche à une puissance de 200 et reculer la roue droite à une puissance de 150
 ```
 
 #### Les pins

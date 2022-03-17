@@ -226,7 +226,7 @@ preload() {
 
 L'image `echelle` est un segment de 100 pixels qui représente 10 centimètres dans l'espace simulé.
 
-```{image} ./figures/scale.png
+```{image} ./figures/mapJs.png
 :alt: scale
 :width: 100px
 :align: center
@@ -458,16 +458,194 @@ constructor(
   this.rotationOrigin = Math.atan2(y, x)
 
   this.rotationPoint1 =
-    robotRotation + Math.atan2(point1.y, point1.x);
+    Math.atan2(point1.y, point1.x);
   this.rotationPoint2 =
-    robotRotation + Math.atan2(point2.y, point2.x);
+    Math.atan2(point2.y, point2.x);
 ```
 
-  
+Les éléments `delta` repsésente la distance avec `reference` et `rotation` les angles  par rapport à l'horizontal.
+
+#### L'élément `wheel`
+
+``` {code-block} js
+---
+linenos: true
+---
+this.wheel = scene.matter.add
+.gameObject(
+  scene.add.rectangle(
+    reference.x + this.delta * Math.cos(this.rotationOrigin + robotRotation),
+    reference.y + this.delta * Math.sin(this.rotationOrigin + robotRotation;),
+    width,
+    height,
+    0x808080
+  ),
+  scene.matter.add.rectangle(
+    reference.x + this.delta * Math.cos(this.rotationOrigin + robotRotation),
+    reference.y + this.delta * Math.sin(this.rotationOrigin + robotRotation),
+    width,
+    height
+  )
+)
+.setRotation(robotRotation)
+.setFrictionAir(3);
+
+scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
+  pointA: {
+    x: (height / 2) * Math.sin(-robotRotation),
+    y: (height / 2) * Math.cos(-robotRotation),
+  },
+  pointB: {
+    x: deltaPoint1 * Math.cos(this.rotationPoint1 + robotRotation),
+    y: deltaPoint1 * Math.sin(this.rotationPoint1 + robotRotation),
+  },
+});
+
+scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
+  pointA: {
+    x: (height / 2) * Math.sin(-robotRotation),
+    y: (height / 2) * Math.cos(-robotRotation),
+  },
+  pointB: {
+    x: deltaPoint2 * Math.cos(this.rotationPoint2 + robotRotation),
+    y: deltaPoint2 * Math.sin(this.rotationPoint2 + robotRotation),
+  },
+});
+
+scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
+  pointA: {
+    x: (height / 2) * Math.sin(robotRotation),
+    y: (-height / 2) * Math.cos(robotRotation),
+  },
+  pointB: {
+    x: deltaPoint1 * Math.cos(this.rotationPoint1 + robotRotation),
+    y: deltaPoint1 * Math.sin(this.rotationPoint1 + robotRotation),
+  },
+});
+
+scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
+  pointA: {
+    x: (height / 2) * Math.sin(robotRotation),
+    y: (-height / 2) * Math.cos(robotRotation),
+  },
+  pointB: {
+    x: deltaPoint2 * Math.cos(this.rotationPoint2 + robotRotation),
+    y: deltaPoint2 * Math.sin(this.rotationPoint2 + robotRotation),
+  },
+});
+```
+
+L'élément `wheel` est crée des lignes xx à xx, puis l'attache à `reference` depuis `point1` `point2` à l'aide de 4 éléments `constraint` afin de former une structure rigide.
+
+```{image} ./figures/constraint.png
+:alt: constraint
+:width: 100px
+:align: center
+```
+
+#### La méthode `setSpeed`
+
+``` {code-block} js
+---
+linenos: true
+---
+setSpeed(dir, power) {
+  if (power >= 0 && power <= 255) {
+    this.dir = dir;
+    this.power = power;
+    const speed = this.powToSpeed(power) * this.radius;
+
+    if (speed < 0) {
+      speed = 0;
+    }
+
+    if (dir == 0) {
+        this.speed = 0;
+      } else if (dir == 1) {
+        this.speed = speed;
+      } else if (dir == 2) {
+        this.speed = -speed;
+}
+```
+
+Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0.
 
 ### Les capteurs infrarouges
 
 ### Les capteurs ultrasons
+#### Explication des paramètres
+
+``` {code-block} js
+constructor(scene, reference, x, y, angle = 0, range = 255, coneAngle = 60)
+```
+* `scene`: la scène à laquelle le robot est ajouté
+* `reference`: l'objet Phaser auquel la roue doit être attachée
+* `x`: la coordonnée horizontale du capteur par rapport à `reference`
+* `y`: la coordonnée verticale du capteur par rapport à `reference`
+* `angle`:  l'angle du capteur par rapport à `reference`
+* `coneAngle`:  l'angle du cone de détection du capteur
+
+#### Le constructeur
+
+``` {code-block} js
+---
+linenos: true
+---
+class ultrasonicD {
+  constructor(scene, reference, x, y, angle = 0, range = 255, coneAngle = 60) {
+    this.reference = reference;
+    this.scene = scene;
+    this.range = range;
+    this.rotation = (angle / 180) * Math.PI;
+    this.delta = Math.sqrt(x ** 2 + y ** 2);
+    this.rotationOrigin = Math.atan2(y, x);
+
+    this.raycaster = scene.raycasterPlugin.createRaycaster()
+    this.rayCone = this.raycaster
+      .createRay({
+        origin: {
+          x: reference.x + x,
+          y: reference.y + y,
+        },
+        autoSlice: true,
+        collisionRange: range * 10,
+      })
+      .setConeDeg(coneAngle)
+      .setAngle(reference.rotation + Math.PI / 2 + this.rotation);
+
+    this.rayCone.enablePhysics("matter");
+  }
+```
+
+Le contructeur crée aux lignes xx-xx un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
+
+#### La méthode `getDistance()`
+
+``` {code-block} js
+---
+linenos: true
+---
+getDistance() {
+  let distances = [];
+  this.raycaster.mapGameObjects(this.scene.RaycasterDomain);
+  this.intersections = this.rayCone.castCone();
+  for (let i = 0; i < this.intersections.length; i++) {
+    distances.push(Math.round(Math.sqrt(
+      (this.intersections[i].x - this.rayCone.origin.x) ** 2 +
+      (this.intersections[i].y - this.rayCone.origin.y) ** 2
+    )));
+  }
+  const min = Math.min(...distances);
+  if (min < this.range * 10) {
+    return Math.round(min / 10);
+  } else {
+    return this.range;
+  }
+}
+```
+
+Dans ce code `intersections` est une  liste de points 
+
 
 ### Les leds
 
