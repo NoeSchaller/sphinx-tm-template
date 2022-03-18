@@ -619,6 +619,13 @@ class ultrasonicD {
 
 Le contructeur crée aux lignes xx-xx un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
 
+``` {admonition} Commmentaire
+---
+class: note
+---
+Le terme `Math.PI / 2` à la ligne 21 est présent car l'angle 0 se trouve à droite pour le plugin alors que le robot est définit avec l'angle 0 vers le haut.
+```
+
 #### La méthode `getDistance()`
 
 ``` {code-block} js
@@ -644,10 +651,80 @@ getDistance() {
 }
 ```
 
-Dans ce code `intersections` est une  liste de points 
+Dans ce code `intersections` est une  liste de points d'intersections entre le capteur et les éléments de `RaycasterDomain`. La distance entre ces points et le capteur est calculée des lignes 5 à 10. Elle est ensuite ajoutée à `distances`, seul la plus petite distance est retenue à la ligne 11.
 
+#### La méthode `update`
+
+``` {code-block} js
+---
+linenos: true
+---
+update() {
+  this.rayCone
+    .setOrigin(
+      this.reference.x +
+      this.delta * Math.cos(this.reference.rotation + this.rotationOrigin),
+      this.reference.y +
+      this.delta * Math.sin(this.reference.rotation + this.rotationOrigin)
+    )
+    .setAngle(this.reference.rotation - Math.PI / 2 + this.angle);
+}
+```
+
+Cette méthode sert à replacer le capteur par rapport au robot et d'ajuster son angle.
 
 ### Les leds
+#### Le constructeur
+
+``` {code-block} js
+---
+linenos: true
+---
+constructor(scene, reference, x, y, radius = 4) {
+  this.reference = reference;
+  this.on = false;
+  this.delta = Math.sqrt(x ** 2 + y ** 2);
+  this.rotationOrigin = Math.atan2(y, x);
+
+  this.led = scene.add
+    .circle(reference.x + x, reference.y + y, radius, 0x500000)
+    .setDepth(2);
+}
+```
+
+#### Les méthodes
+
+``` {code-block} js
+---
+linenos: true
+---
+setOn(bool) {
+  this.on = bool;
+
+  if (bool) {
+    this.led.fillColor = 0xff0000;
+  } else {
+    this.led.fillColor = 0x500000;
+  }
+}
+
+getOn() {
+  return this.on;
+}
+
+update() {
+  this.led.setPosition(
+    this.reference.x +
+    this.delta * Math.cos(this.reference.rotation + this.rotationOrigin),
+    this.reference.y +
+    this.delta * Math.sin(this.reference.rotation + this.rotationOrigin)
+  );
+}
+```
+
+`setOn` permet d'allumer ou d'éteindre la led et `getOn` d'obtenir son état. `update` 
+
+### Les leds rgb
 
 ### Les i2c
 
