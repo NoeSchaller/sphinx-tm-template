@@ -557,7 +557,7 @@ setSpeed(dir, power) {
   if (power >= 0 && power <= 255) {
     this.dir = dir;
     this.power = power;
-    const speed = this.powToSpeed(power) * this.radius;
+ let speed = this.powToSpeed(power) * this.radius  * (12 / 100);;
 
     if (speed < 0) {
       speed = 0;
@@ -572,11 +572,22 @@ setSpeed(dir, power) {
 }
 ```
 
-Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0.
+Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètre en nombres utilisable par Phaser, il a été trouvé par expérience.
 
 #### La méthode `update`
 
-``` {}
+``` {code-block} js
+---
+linenos: true
+---
+update() {
+  this.wheel.body.positionImpulse.x =
+    (Math.cos(this.wheel.rotation - Math.PI / 2) * this.speed);
+
+  this.wheel.body.positionImpulse.y =
+    (Math.sin(this.wheel.rotation - Math.PI / 2) * this.speed);
+}
+```
 
 ### Les capteurs infrarouges
 
