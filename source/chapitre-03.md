@@ -472,23 +472,27 @@ Les éléments `delta` repsésente la distance avec `reference` et `rotation` le
 linenos: true
 ---
 this.wheel = scene.matter.add
-.gameObject(
-  scene.add.rectangle(
-    reference.x + this.delta * Math.cos(this.rotationOrigin + robotRotation),
-    reference.y + this.delta * Math.sin(this.rotationOrigin + robotRotation;),
-    width,
-    height,
-    0x808080
-  ),
-  scene.matter.add.rectangle(
-    reference.x + this.delta * Math.cos(this.rotationOrigin + robotRotation),
-    reference.y + this.delta * Math.sin(this.rotationOrigin + robotRotation),
-    width,
-    height
+  .gameObject(
+    scene.add.rectangle(
+      reference.x +
+        this.deltaOrigin * Math.cos(this.rotationOrigin + robotRotation),
+      reference.y +
+        this.deltaOrigin * Math.sin(this.rotationOrigin + robotRotation),
+      width,
+      height,
+      0x808080
+    ),
+    scene.matter.add.rectangle(
+      reference.x +
+        this.deltaOrigin * Math.cos(this.rotationOrigin + robotRotation),
+      reference.y +
+        this.deltaOrigin * Math.sin(this.rotationOrigin + robotRotation),
+      width,
+      height
+    )
   )
-)
-.setRotation(robotRotation)
-.setFrictionAir(3);
+  .setRotation(robotRotation)
+  .setFrictionAir(3);
 
 scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
   pointA: {
@@ -569,6 +573,10 @@ setSpeed(dir, power) {
 ```
 
 Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0.
+
+#### La méthode `update`
+
+``` {}
 
 ### Les capteurs infrarouges
 
