@@ -9,7 +9,3 @@ code:
     ajouter i2c.read
     ajouter class zone
     retirer les commentaires
-    startAngle => startRotation
-    retirer robotRotation ligne 333, mettre direct en radiant dans les paramètres
-    retirer startAngle 
-    renommer delta => deltaOrigin

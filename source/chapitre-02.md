@@ -178,7 +178,7 @@ Dans cet exemple ainsi que tout les suivants, on suppose que la simulation est a
 ```
 Une fois le robot séléctionné, il ne reste qu'à choisir un des composants simulés du robot. En effet à l'image du Maqueen, le robot simulé possède également des commandes basées sur des pins et de l'I2C.
 ### Le Maqueen lite
-#### L'I2C
+#### L'i2c
 L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
 
 ```{code-block} js
@@ -239,3 +239,14 @@ La première ligne "allume" la led gauche et la seconde retourne true si le capt
 ```
 
 ### le Macqueen plus
+#### L'i2c
+Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit avec `i2c.write` ou avec `i2c.read`
+#### La méthode `write`
+
+``` {code-block} js
+robot.i2c.write(adresse, [register, byte1, byte2, ...])
+```
+
+| a    | b    |
+| :--- | ---: |
+| c    | d    |

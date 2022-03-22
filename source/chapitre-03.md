@@ -590,6 +590,27 @@ update() {
 ```
 
 ### Les capteurs infrarouges
+#### Le constructeur
+
+``` {code-block} js
+---
+linenos: true
+---
+constructor(scene, reference, x, y, radius = 2) {
+  this.scene = scene;
+  this.reference = reference;
+  this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
+  this.rotationOrigin = Math.atan2(y, x);
+
+  this.ir = scene.matter.add
+    .gameObject(
+      scene.add.circle(reference.x + x, reference.y + y, radius, 0xffffff),
+      scene.matter.add.circle(reference.x + x, reference.y + y, 1)
+    )
+    .setCollidesWith(0)
+    .setDepth(2);
+}
+```
 
 ### Les capteurs ultrasons
 #### Explication des paramètres
@@ -698,6 +719,7 @@ Cette méthode sert à replacer le capteur par rapport au robot et d'ajuster son
 ``` {code-block} js
 ---
 linenos: true
+caption: Le contructeur de la classe `led`
 ---
 constructor(scene, reference, x, y, radius = 4) {
   this.reference = reference;
@@ -711,24 +733,34 @@ constructor(scene, reference, x, y, radius = 4) {
 }
 ```
 
+``` {code-block} js
+---
+linenos : true
+caption: Le constructeur de la classe `rgbLed`
+---
+constructor(scene, reference, x, y, radius = 5) {
+  this.reference = reference;
+  this.color = 0x808080;
+  this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
+  this.rotationOrigin = Math.atan2(y, x)
+
+  this.rgb = scene.add
+    .circle(reference.x + x, reference.y + y, radius, 0x808080)
+    .setDepth(2);
+}
+```
+
+Les contructeurs des deux types de leds sont extrêmement similaires, la seule différence étant que les led rgb ont une propriété `color` et les autres une `on`.
+
 #### Les méthodes
 
 ``` {code-block} js
 ---
 linenos: true
+caption: Les méthodes de la classe `led`
 ---
 setOn(bool) {
   this.on = bool;
-
-  if (bool) {
-    this.led.fillColor = 0xff0000;
-  } else {
-    this.led.fillColor = 0x500000;
-  }
-}
-
-getOn() {
-  return this.on;
 }
 
 update() {
@@ -738,12 +770,39 @@ update() {
     this.reference.y +
     this.delta * Math.sin(this.reference.rotation + this.rotationOrigin)
   );
+
+  if (this.on) {
+    this.led.fillColor = 0xff0000;
+  } else {
+    this.led.fillColor = 0x500000;
+  }
 }
 ```
 
-`setOn` permet d'allumer ou d'éteindre la led et `getOn` d'obtenir son état. `update` 
+``` {code-block} js
+---
+linenos: true
+caption: Les méthodes de la classe `rgbLed`
+---
+setColor(color) {
+  this.color = color;
+}
 
-### Les leds rgb
+update() {
+  this.rgb.setPosition(
+    this.reference.x +
+      this.deltaOrigin *
+        Math.cos(this.reference.rotation + this.rotationOrigin),
+    this.reference.y +
+      this.deltaOrigin *
+        Math.sin(this.reference.rotation + this.rotationOrigin)
+  );
+
+  this.rgb.fillColor = this.color;
+}
+```
+
+Les méthodes `setOn` et `setColor` permet de changer l'état de la led, soit avec un booléen, soit avec une couleur exprimée en hexadécimal. `update` met à jour la position et l'apparence de la led.
 
 ### Les i2c
 
