@@ -1,6 +1,6 @@
 écrit :
     pas oublier les i2c
-    pas oublier les méthodes dans mode d'emploi
+    pas oublier les méthodes des éléments dans mode d'emploi
     écrire contrôler les robots
 
 code:

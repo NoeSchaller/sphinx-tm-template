@@ -176,30 +176,26 @@ class: warning
 ---
 Dans cet exemple ainsi que tout les suivants, on suppose que la simulation est appelée `sim`.
 ```
-Une fois le robot séléctionné, il ne reste qu'à choisir un des composants simulés du robot. En effet à l'image du Maqueen, le robot simulé possède également des commandes basées sur des pins et de l'I2C.
+Une fois le robot séléctionné, il ne reste qu'à choisir un des composants simulés du robot. En effet à l'image du Maqueen, le robot simulé possède également des commandes basées sur des pins et de l'i2c.
 ### Le Maqueen lite
 #### L'i2c
 L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
 
 ```{code-block} js
-write(adresse, data)
+robot.i2c.write(adresse, [register, dir1, power1, dir2, power2])
 ```
 * `adresse`: permet de choisir à quelle puce les données sont envoyés: les moteurs sont contrôlés par la puce 0x10
-* `data`: une liste qui contient les octets de données qui seront envoyés à la puce, les données prennent ce format pour contrôler les moteurs:
-
-```{code-block} js
-data = [commande, dir1, puissance1, dir2, puissance2]
-```
-
-* `commande`: il y a deux valeurs possibles. 0x00 qui permet de modifier l'état du moteur gauche ou des deux et 0x02 qui ne modifie que le droit
+* `register`: la référence de la commande à utiliser: 
+  * `0x00`: qui permet de modifier l'état du moteur gauche avec `dir1` et `power2` et optionnellement du moteur droit avec `dir2` et `power2`.
+  * `0x02`: ne prend que `` et `` et l'applique au moteur droit
 * `dir`: définit la direction du moteur, 0 pour le stopper, 1 pour aller vers l'avant et 2 pour reculer
-* `puissance`: la vitesse de rotation des moteurs
+* `power`: la vitesse de rotation des moteurs
 
 ```{admonition} Note
 ---
 class: tip
 ---
-Si l'on ne modifie le statut que d'un moteur, `dir2` et `puissance2` ne sont bien sûr pas nécessaires.
+Si l'on ne modifie le statut que d'un moteur, `dir2` et `power2` ne sont bien sûr pas nécessaires.
 ```
 
 ```{code-block} js
@@ -247,6 +243,15 @@ Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit a
 robot.i2c.write(adresse, [register, byte1, byte2, ...])
 ```
 
-| a    | b    |
-| :--- | ---: |
-| c    | d    |
+* `adresse` : l'adresse de la puce
+* `register`: La référence de la commande à utiliser (voir tableau ci-dessous)
+* `byte`: un octet transmis à la puce
+
+| Registre    | Effet    | Octet(s) | Octet(s) ajouté au buffer |
+| :--- | :--- | :--- | :--- |
+| `0x00`    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
+  | `0x02` | voir Maqueen lite | - | `dirR`, `powerR` |
+| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés |  | d |
+| `0x0c` | d | d | d |
+| `0x` | d | d | d |
+| `0x` | d | d | d |
