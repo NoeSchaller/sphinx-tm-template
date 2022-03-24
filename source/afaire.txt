@@ -1,11 +1,9 @@
 écrit :
-    pas oublier les i2c
-    pas oublier les méthodes des éléments dans mode d'emploi
-    écrire contrôler les robots
+    modier la diposition des éléments (chap2)
+    stateBlakc (chap2)
 
 code:
     réécrire un peu Picture (angle)
     réécrire SeeMark()
-    ajouter i2c.read
     ajouter class zone
-    retirer les commentaires
+    checker mouse.constraint

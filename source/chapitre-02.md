@@ -240,18 +240,29 @@ Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit a
 #### La méthode `write`
 
 ``` {code-block} js
-robot.i2c.write(adresse, [register, byte1, byte2, ...])
+robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 ```
 
-* `adresse` : l'adresse de la puce
+* `adresse` : l'adresse de la puce (la seule puce existante est la puce `0x10`)
 * `register`: La référence de la commande à utiliser (voir tableau ci-dessous)
 * `byte`: un octet transmis à la puce
 
-| Registre    | Effet    | Octet(s) | Octet(s) ajouté au buffer |
+| Registre    | Effet    | Octet | Octet(s) ajouté au buffer |
 | :--- | :--- | :--- | :--- |
 | `0x00`    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
   | `0x02` | voir Maqueen lite | - | `dirR`, `powerR` |
-| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés |  | d |
-| `0x0c` | d | d | d |
-| `0x` | d | d | d |
-| `0x` | d | d | d |
+| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | aucun |
+| `0x0c` | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
+| `0x1d` | Aucun | Aucun | Un octet donc l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteurs le plus à droite et le premier le plus à gauche) |
+
+#### La méthode `read`
+
+``` {code-block} js
+robot[1].i2c.read(adresse, nb)
+```
+* `adresse`: l'adress de la puce
+* `nb`: le nombre d'octet à lire
+
+La méthode `i2c.read` permet d'accéder aux octets stockés dans le buffer
+
+## Modifier la disposition des l'éléments

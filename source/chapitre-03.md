@@ -596,11 +596,12 @@ update() {
 ---
 linenos: true
 ---
-constructor(scene, reference, x, y, radius = 2) {
+constructor(scene, reference, x, y, radius = 2, StateBlack = true) {
   this.scene = scene;
   this.reference = reference;
   this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
   this.rotationOrigin = Math.atan2(y, x);
+  this.StateBlack = StateBlack;
 
   this.ir = scene.matter.add
     .gameObject(
@@ -611,6 +612,65 @@ constructor(scene, reference, x, y, radius = 2) {
     .setDepth(2);
 }
 ```
+
+#### La méthode `isMarked`
+
+``` {code-block} js
+---
+linenos: true
+---
+isMarked() {
+  for (let i = 0; i < this.scene.marks.length; i++) {
+    if (this.scene.matter.overlap(this.ir, this.scene.marks[i].body)) {
+      const mark = this.scene.marks[i];
+      if (mark.picture == "geom") {
+        return StateBlack;
+      }
+      const color = this.scene.textures.getPixel(
+        (this.ir.x - mark.position.x + (mark.body.width * mark.scale.x) / 2) /
+          mark.scale.x,
+        (this.ir.y - mark.position.y + (mark.body.width * mark.scale.y) / 2) /
+          mark.scale.y,
+        mark.picture
+      );
+      if (color == null) {
+      } else {
+        if (color.v < 0.2) {
+          return this.StateBlack;
+        }
+      }
+    }
+  }
+  return !this.StateBlack;
+}
+```
+
+La méthode contrôle pour chaque marque existant dans la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est le cas et que la clef de l'image n'est pas `geom`, ce qui signifie que l'image est un élément géométrique noir, elle obtient la couleur du pixel sur laquelle il se trouve. Il peut arriver que le pixel rechercher soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesurer qu'en son centre, si c'est le cas la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité et si cette dernère est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée sombre.
+
+#### La méthode `update`
+
+``` {code-block} js
+---
+linenos: true
+---
+update() {
+  this.ir.setPosition(
+    this.reference.x +
+      this.deltaOrigin *
+        Math.cos(this.reference.rotation + this.rotationOrigin),
+    this.reference.y +
+      this.deltaOrigin *
+        Math.sin(this.reference.rotation + this.rotationOrigin)
+  );
+   if (this.isMarked()) {
+    this.ir.fillColor = 0xffffff;
+  } else {
+    this.ir.fillColor = 0x404040;
+  }
+}
+```
+
+`update` sert à la fois à replacer le capteur par rapport à la référence et à actualiser son apparence e nfonction de son état.
 
 ### Les capteurs ultrasons
 #### Explication des paramètres
@@ -804,9 +864,9 @@ update() {
 
 Les méthodes `setOn` et `setColor` permet de changer l'état de la led, soit avec un booléen, soit avec une couleur exprimée en hexadécimal. `update` met à jour la position et l'apparence de la led.
 
-### Les i2c
-
 ### Les pins
+
+### Les i2c
 
 ## Les robots
 
