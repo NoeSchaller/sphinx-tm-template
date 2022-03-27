@@ -168,7 +168,7 @@ Les lignes 2 à 4 du code font une itération à travers la liste des robots et 
 
 ## La scène overlay
 
-La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui permet de la manipuler. La plupart de ces rôles sont pris en charge par la classe `CameraManager`. La création d'une scène dédiée à cet usage est toutefois essentielle car elle permet d'éviter d'avoir des interactions indésirables entre des éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter que l'interface se déplacer en même que la caméra puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
+La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui permet de la manipuler. La création d'une scène dédiée à cet usage est essentielle car elle permet d'éviter d'avoir des interactions indésirables entre des éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter que l'interface se déplacer en même que la caméra puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
 
 ### Le constructeur
 
@@ -192,7 +192,7 @@ init(data) {
 }
 ```
 
-La fonction `init` permet de recevoir des informations lorsque la scène est initialisée. Contrairement au constructeur qui est appelé lors de la création de la classe `Game` cette fonction est appélée lorsque la scène démarre alors que le constructeur est appélé lorsque la scène est créée avant que la simulation ait démarrée.
+La fonction `init` permet de recevoir des informations lorsque la scène est initialisée. Contrairement au constructeur qui est appelé lors de la création de la classe `Game` cette fonction est appellée lorsque la scène démarre alors que le constructeur est appellé lorsque la scène est créée avant que la simulation ait démarrée.
 
 ``` {code-block} js
 scene: [
@@ -207,13 +207,13 @@ scene: [
 ],
 ```
 
-Par exemple dans ce code qui se trouve dans les paramètres de la classe `Game`, c'est le constructeur qui est appelé.
+Par exemple, dans ce code qui se trouve dans les paramètres de la classe `Game`, c'est le constructeur qui est appelé.
 
 ``` {code-block} js
 this.scene.launch("overlay", [this.robots, this.cameras.main]);
 ```
 
-Cette ligne sert à initialiser la scène `overlay` depuis un autre scène les arguments suivants la clé de la scène à initialiser sont transmis à la fonction `init`.
+Cette ligne sert à initialiser la scène `overlay` depuis une autre scène, le second argument est transmis à la fonction `init`.
 La fonction `init` est donc essentielle car est permet à la scène `overlay` de s'adapter au éléments présents dans la simulation. Ainsi dans ce cas, la fonction reçoit la scène principale et il lui sera donc possible d'en extraire les données nécessaires à la scène `overlay`
 
 ### La fonction preload
@@ -239,14 +239,78 @@ L'image `echelle` est un segment de 100 pixels qui représente 10 centimètres d
 linenos: true
 ---
 create() {
-  this.echelle = this.add.image(70, this.height - 30, 'echelle')
-  this.buttonsCam = []
+  this.buttons = [];
+  this.echelle = this.add.image(70, this.height - 30, "echelle");
+  this.follow = -1;
 
-  this.camera = new CameraManager(this, this.robots, this.cameraMain);
+  this.add
+    .text(10, 60, "-", {
+      color: "#000",
+      backgroundColor: "#fff",
+      padding: 1,
+      fontSize: 40,
+    })
+    .setInteractive()
+    .on("pointerdown", () => {
+      (this.camera.zoom /= 1.2), (this.echelle.scale /= 1.2);
+    });
+
+  this.add
+    .text(10, 10, "+", {
+      color: "#000",
+      backgroundColor: "#fff",
+      padding: 1,
+      fontSize: 40,
+    })
+    .setInteractive()
+    .on("pointerdown", () => {
+      (this.camera.zoom *= 1.2), (this.echelle.scale *= 1.2);
+    });
+
+  this.buttons.push(
+    this.add
+      .text(10, 110, "Free", {
+        color: "#000",
+        backgroundColor: "#999",
+        padding: 3,
+      })
+      .setInteractive()
+      .on("pointerdown", () => {
+        (this.follow = -1),
+          this.cursor.setPosition(15 + this.buttons[0].width, 110),
+          this.camera.stopFollow();
+      })
+  );
+
+  this.cursor = this.add.text(0, 0, "<=", { color: "#000", fontSize: 20 });
+
+  for (let i = 0; i < this.robots.length; i++) {
+    this.buttons.push(
+      this.add
+        .text(10, 140 + 30 * i, this.robots[i].name, {
+          color: "#000",
+          backgroundColor: "#999",
+          padding: 3,
+        })
+        .setInteractive()
+        .on("pointerdown", () => {
+          (this.follow = i),
+            this.cursor.setPosition(
+              15 + this.buttons[i + 1].width,
+              140 + 30 * i
+            );
+        })
+    );
+  }
+
+  this.cursor.setPosition(15 + this.buttons[0].width, 113);
 }
 ```
 
-La fonction `create` met en place l'échelle à la ligne 2. Elle prépare également une liste vide nommée `buttonsCam` à la ligne suivante pour contenir les boutons de l'interface graphique. Finalement la ligne 5 créée une occurence de la classe `CameraManager` qui s'occupera de gérer la caméra de la scène principale.
+Les lignes 2-4 de la fonction `create` mettent les varibles élémentaires à la gestion de la caméra, une liste vide pour contenir les boutons, une image qui servira d'échelle et la variable `follow` qui représente l'état de la caméra.
+
+
+La fonction crée ensuite une série de boutons:
 
 ### La fonction update
 
@@ -454,15 +518,13 @@ constructor(
   }
 
   this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
-  const deltaPoint1 = Math.sqrt(point1.x ** 2 + point1.y ** 2);
-  const deltaPoint2 = Math.sqrt(point2.x ** 2 + point2.y ** 2);
+  const deltaPoint1 = Math.sqrt(point1.x ** 2 + point1.y ** 2),
+   deltaPoint2 = Math.sqrt(point2.x ** 2 + point2.y ** 2);
 
   this.rotationOrigin = Math.atan2(y, x)
 
-  this.rotationPoint1 =
-    Math.atan2(point1.y, point1.x);
-  this.rotationPoint2 =
-    Math.atan2(point2.y, point2.x);
+  const rotationPoint1 = Math.atan2(point1.y, point1.x),
+   rotationPoint2 = Math.atan2(point2.y, point2.x);
 ```
 
 Les éléments `delta` repsésente la distance avec `reference` et `rotation` les angles  par rapport à l'horizontal.
@@ -502,8 +564,8 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
     y: (height / 2) * Math.cos(-robotRotation),
   },
   pointB: {
-    x: deltaPoint1 * Math.cos(this.rotationPoint1 + robotRotation),
-    y: deltaPoint1 * Math.sin(this.rotationPoint1 + robotRotation),
+    x: deltaPoint1 * Math.cos(rotationPoint1 + robotRotation),
+    y: deltaPoint1 * Math.sin(rotationPoint1 + robotRotation),
   },
 });
 
@@ -513,8 +575,8 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
     y: (height / 2) * Math.cos(-robotRotation),
   },
   pointB: {
-    x: deltaPoint2 * Math.cos(this.rotationPoint2 + robotRotation),
-    y: deltaPoint2 * Math.sin(this.rotationPoint2 + robotRotation),
+    x: deltaPoint2 * Math.cos(rotationPoint2 + robotRotation),
+    y: deltaPoint2 * Math.sin(rotationPoint2 + robotRotation),
   },
 });
 
@@ -524,8 +586,8 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
     y: (-height / 2) * Math.cos(robotRotation),
   },
   pointB: {
-    x: deltaPoint1 * Math.cos(this.rotationPoint1 + robotRotation),
-    y: deltaPoint1 * Math.sin(this.rotationPoint1 + robotRotation),
+    x: deltaPoint1 * Math.cos(rotationPoint1 + robotRotation),
+    y: deltaPoint1 * Math.sin(rotationPoint1 + robotRotation),
   },
 });
 
@@ -535,8 +597,8 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
     y: (-height / 2) * Math.cos(robotRotation),
   },
   pointB: {
-    x: deltaPoint2 * Math.cos(this.rotationPoint2 + robotRotation),
-    y: deltaPoint2 * Math.sin(this.rotationPoint2 + robotRotation),
+    x: deltaPoint2 * Math.cos(rotationPoint2 + robotRotation),
+    y: deltaPoint2 * Math.sin(rotationPoint2 + robotRotation),
   },
 });
 ```
@@ -971,14 +1033,14 @@ La méthode `write` de la classe `i2cPlus` fonction de la même manière que ce 
 
 ## Les robots
 
-Le code des robots est relativement simple puisqu'il ne fait que mettre en place les différents {ref}`composants`
+Le code des robots est relativement simple puisqu'il ne fait que mettre en place les différents {ref}`composants <composants>`
 
 ### Le constructeur
-#### Le maqueen Lite
 
 ``` {code-block} js
 ---
 linenos: true
+caption: le constructeur du maqueen Lite
 ---
 constructor(scene, name, x, y, angle) {
   //mise  en place de variables
@@ -1058,19 +1120,213 @@ constructor(scene, name, x, y, angle) {
 }
 ```
 
+``` {code-block} js
+---
+linenos: true
+caption: le constructeur du maqueen Plus
+---
+constructor(scene, name, x, y, angle) {
+  //mise  en place de variables
+  this.name = name;
+  this.type = "maqueenPlus";
+
+  //mise en place de l'élément body
+  this.body = scene.matter.add
+    .sprite(x, y, "plusBodyPic", undefined, {
+      shape: scene.cache.json.get("plusShape").body,
+    })
+    .setFrictionAir(0)
+    .setAngle(angle);
+
+  //mise en place des moteurs
+  let speedGrowth = function (power) {
+    return (
+      -1e-8 * power ** 4 +
+      1e-5 * power ** 3 -
+      0.0032 * power ** 2 +
+      0.4053 * power -
+      2.8394
+    );
+  };
+  this.Lmotor = new motor(
+    scene,
+    this.body,
+    angle / 180 * Math.PI,
+    -45,
+    27,
+    9,
+    43,
+    { x: -10, y: 5 },
+    { x: -10, y: 49 },
+    speedGrowth
+  );
+
+  this.Rmotor = new motor(
+    scene,
+    this.body,
+    angle / 180 * Math.PI,
+    45,
+    27,
+    9,
+    43,
+    { x: 10, y: 5 },
+    { x: 10, y: 49 },
+    speedGrowth
+  );
+
+  //mise en place du capteur ultrason
+  this.ultrasonic = new ultrasonicD(scene, this.body, 0, -21);
+
+  //mise en place des capteurs infrarouges
+  this.irL1 = new infra(scene, this.body, -5, -31);
+
+  this.irL2 = new infra(scene, this.body, -15, -31);
+
+  this.irL3 = new infra(scene, this.body, -45, -11);
+
+  this.irR1 = new infra(scene, this.body, 5, -31);
+
+  this.irR2 = new infra(scene, this.body, 15, -31);
+
+  this.irR3 = new infra(scene, this.body, 45, -11);
+
+  //mise en place des leds rgb
+  this.LLed = new rgbLed(scene, this.body, -20, -45);
+
+  this.RLed = new rgbLed(scene, this.body, 20, -45);
+
+  //mise en place de l'i2c
+  this.i2c = new i2cPlus(this);
+
+  // ajout du robot à la liste des robots
+  scene.robots.push(this);
+}
+```
+
 L'élement `body` est une sprite qui utilise l'image `liteBodyPic` comme apparence et dont la forme est stockées dans le document JSON qui possède la clé `liteShape`.
 
 
 La fonction `speedGrowth` a été trouvée par mesure, ces mesures se trouvent en annexe.
 
-
+### Les méthodes
 
 ``` {code-block} js
 ---
 linenos: true
+caption: les méthodes du maqueen Lite
 ---
+getDistance() {
+  return this.ultrasonic.getDistance();
+}
 
+update() {
+  this.Lmotor.update();
+  this.Rmotor.update();
+  this.ultrasonic.update();
+  this.irL.update();
+  this.irR.update();
+  this.LLed.update();
+  this.RLed.update();
+}
+
+setPosition(x, y) {
+  this.body.setPosition(x, y);
+  this.Lmotor.wheel.setPosition(
+    x + this.Lmotor.delta * Math.cos(this.Lmotor.relAngle),
+    y + this.Lmotor.delta * Math.sin(this.Lmotor.relAngle)
+  );
+  this.Rmotor.wheel.setPosition(
+    x + this.Rmotor.delta * Math.cos(this.Rmotor.relAngle),
+    y + this.Rmotor.delta * Math.sin(this.Rmotor.relAngle)
+  );
+}
+
+setAngle(deg) {
+  this.body.setAngle(deg);
+
+  this.Lmotor.wheel.setPosition(
+    this.body.x +
+      this.Lmotor.delta *
+        Math.cos((deg / 180) * Math.PI + this.Lmotor.relAngle),
+    this.body.y +
+      this.Lmotor.delta *
+        Math.sin((deg / 180) * Math.PI + this.Lmotor.relAngle)
+  );
+  this.Lmotor.wheel.setAngle(deg);
+
+  this.Rmotor.wheel.setPosition(
+    this.body.x +
+      this.Rmotor.delta *
+        Math.cos((deg / 180) * Math.PI + this.Rmotor.relAngle),
+    this.body.y +
+      this.Rmotor.delta *
+        Math.sin((deg / 180) * Math.PI + this.Rmotor.relAngle)
+  );
+  this.Rmotor.wheel.setAngle(deg);
+}
 ```
+
+``` {code-block} js
+---
+linenos: true
+caption: les méthodes du maqueen Plus
+---
+getDistance(){
+  return this.ultrasonic.getDistance()
+}
+
+update() {
+  this.Lmotor.update();
+  this.Rmotor.update();
+  this.ultrasonic.update();
+  this.irL1.update();
+  this.irL2.update();
+  this.irL3.update();
+  this.irR1.update();
+  this.irR2.update();
+  this.irR3.update();
+  this.LLed.update();
+  this.RLed.update();
+}
+
+setPosition(x, y) {
+  this.body.setPosition(x, y);
+  this.Lmotor.wheel.setPosition(
+    x + this.Lmotor.delta * Math.cos(this.Lmotor.startAngle),
+    y + this.Lmotor.delta * Math.sin(this.Lmotor.startAngle)
+  );
+  this.Rmotor.wheel.setPosition(
+    x + this.Rmotor.delta * Math.cos(this.Rmotor.startAngle),
+    y + this.Rmotor.delta * Math.sin(this.Rmotor.startAngle)
+  );
+}
+
+setAngle(deg) {
+  this.body.setAngle(deg);
+
+  this.Lmotor.wheel.setPosition(
+    this.body.x +
+      this.Lmotor.delta *
+        Math.cos((deg / 180) * Math.PI + this.Lmotor.relAngle),
+    this.body.y +
+      this.Lmotor.delta *
+        Math.sin((deg / 180) * Math.PI + this.Lmotor.relAngle)
+  );
+  this.Lmotor.wheel.setAngle(deg);
+
+  this.Rmotor.wheel.setPosition(
+    this.body.x +
+      this.Rmotor.delta *
+        Math.cos((deg / 180) * Math.PI + this.Rmotor.relAngle),
+    this.body.y +
+      this.Rmotor.delta *
+        Math.sin((deg / 180) * Math.PI + this.Rmotor.relAngle)
+  );
+  this.Rmotor.wheel.setAngle(deg);
+}
+```
+
+Les méthodes `setPosition` et `setAngle` ne modifie les état que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
 
 ## La caméra
 
