@@ -182,7 +182,7 @@ Une fois le robot séléctionné, il ne reste qu'à choisir un des composants si
 L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
 
 ```{code-block} js
-robot.i2c.write(adresse, [register, dir1, power1, dir2, power2])
+sim.robot.i2c.write(adresse, [register, dir1, power1, dir2, power2])
 ```
 * `adresse`: permet de choisir à quelle puce les données sont envoyés: les moteurs sont contrôlés par la puce 0x10
 * `register`: la référence de la commande à utiliser: 
@@ -213,8 +213,16 @@ Ce code fait avancer la roue gauche à une puissance de 200 et reculer la roue d
 ```
 
 #### Les pins
-Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui ont un caractère binaire, les pins et les actuateurs/capteurs sont associés de la manière suivante:  
-Les leds sont gérées par le pin8 (la gauche) et le pin12 (la droite). De manière similaire, les pin13 (gauche) et pin14 (droite) gèrent les capteurs infrarouges.  
+Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui ont un caractère binaire, chaque pin est associé à un capteur ou un actuateur.
+
+| Pin | Capteur/Actuateur |
+| :--- | :--- |
+| `pin8` | led gauche |
+| `pin12` | led droite |
+| `pin13` | capteur infrarouge gauche|
+| `pin14` | capteur infrarouge droit|
+
+
 Chaque pin est doté de deux fonctions, l'une pour modifier son état et l'autre pour le lire.
 * read_digital(): retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
 * write_digital(bool): prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)  
@@ -231,16 +239,26 @@ sim.robots[0].pin14.read_digital()
 ---
 class: note
 ---
-La première ligne "allume" la led gauche et la seconde retourne true si le capteur infrarouge droit se trouve au dessus d'un marquage ou d'une portion foncée d'une image
+La première ligne allume la led gauche et la seconde retourne true si le capteur infrarouge droit se trouve au dessus d'une marque ou d'une portion foncée d'une image
+```
+
+(getDistance)=
+#### La méthode `getDistance`
+
+Comme il est très complexe de reproduire le fonctionnement du capteur ultrason de manière fidèle au robot original, il existe simplement une méthode qui retourne la distance en centimètre avec le mur le plus proche.
+
+``` {code-block} js
+sim.robot[0].getDistance()
 ```
 
 ### le Macqueen plus
-#### L'i2c
-Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit avec `i2c.write` ou avec `i2c.read`
-#### La méthode `write`
+
+Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit avec `i2c.write` ou avec `i2c.read`. Les fonctions `i2c.write` ajoutent des données au buffer qui sont ensuite accessibles grâce à la méthode `i2c.read`. Le maqueen plus possède également une méthode `getDistance` qui permet d'utiliser le capteur ultrason.
+
+#### La méthode `i2c.write`
 
 ``` {code-block} js
-robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
+sim.robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 ```
 
 * `adresse` : l'adresse de la puce (la seule puce existante est la puce `0x10`)
@@ -251,18 +269,22 @@ robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 | :--- | :--- | :--- | :--- |
 | `0x00`    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
   | `0x02` | voir Maqueen lite | - | `dirR`, `powerR` |
-| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | aucun |
+| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | Aucun |
 | `0x0c` | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
 | `0x1d` | Aucun | Aucun | Un octet donc l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteurs le plus à droite et le premier le plus à gauche) |
 
-#### La méthode `read`
+#### La méthode `i2c.read`
 
 ``` {code-block} js
-robot[1].i2c.read(adresse, nb)
+sim.robot[1].i2c.read(adresse, nb)
 ```
-* `adresse`: l'adress de la puce
+* `adresse`: l'adresse de la puce
 * `nb`: le nombre d'octet à lire
 
 La méthode `i2c.read` permet d'accéder aux octets stockés dans le buffer
+
+#### La méthode `getDistance`
+
+Voir {ref}`le maqueen lite <getDistance>`
 
 ## Modifier la disposition des l'éléments

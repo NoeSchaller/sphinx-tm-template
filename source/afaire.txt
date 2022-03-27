@@ -1,6 +1,7 @@
 écrit :
     modier la diposition des éléments (chap2)
-    stateBlakc (chap2)
+    stateBlack (chap3)
+    mettre les mesures en annexe
 
 code:
     réécrire un peu Picture (angle)

@@ -226,7 +226,7 @@ preload() {
 
 L'image `echelle` est un segment de 100 pixels qui représente 10 centimètres dans l'espace simulé.
 
-```{image} ./figures/mapJs.png
+```{image} ./figures/scale.png
 :alt: scale
 :width: 100px
 :align: center
@@ -390,6 +390,7 @@ setScale(x, y) {
 ```
 Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
 
+(composants)=
 ## Les composants des robots
 ### La classe motor
 #### Le constructeur
@@ -442,6 +443,7 @@ constructor(
   this.power = 0;
   this.dir = 0;
   this.radius = height / 20;
+  this.angle = 0;
 
   if (powToSpeed === undefined) {
     this.powToSpeed = function (power) {
@@ -581,6 +583,18 @@ Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en a
 linenos: true
 ---
 update() {
+  const deltaX = this.wheel.x - this.wheel.body.positionPrev.x,
+    deltaY = this.wheel.y - this.wheel.body.positionPrev.y,
+    rotationSpeed =
+      Math.round(
+        (Math.sqrt(deltaX ** 2 + deltaY ** 2) / this.radius) *
+          (100 / 12) *
+          5.6 *
+          100
+      ) / 100;
+
+  this.angle += Math.round((rotationSpeed / Math.PI) * 2 * 80);
+
   this.wheel.body.positionImpulse.x =
     (Math.cos(this.wheel.rotation - Math.PI / 2) * this.speed);
 
@@ -588,6 +602,8 @@ update() {
     (Math.sin(this.wheel.rotation - Math.PI / 2) * this.speed);
 }
 ```
+
+La méthode `update` commence par calculer la vitesse de rotation du moteur. Les objects Phaser possède une propriété `speed` mais celle-ci ne semble pas être opérationnelle, en effet elle augmente lorsque le robot bute contre un obstacle. Ensuite la méthode fait avancer la roue en fonction de la vitesse.
 
 ### Les capteurs infrarouges
 #### Le constructeur
@@ -866,9 +882,195 @@ Les méthodes `setOn` et `setColor` permet de changer l'état de la led, soit av
 
 ### Les pins
 
-### Les i2c
+``` {code-block} js
+---
+linenos: true
+---
+write(adresse, byte) {
+  if (adresse == 0x10) {
+    const register = byte[0];
+
+    //gestion des moteur
+    if (register == 0x00) {
+      if (byte.length == 3) {
+        const dirL = byte[1],
+          pL = byte[2];
+        this.robot.Lmotor.setSpeed(dirL, pL);
+      } else if (byte.length == 5) {
+        const dirL = byte[1],
+          pL = byte[2],
+          dirR = byte[3],
+          pR = byte[4];
+        this.robot.Lmotor.setSpeed(dirL, pL);
+        this.robot.Rmotor.setSpeed(dirR, pR);
+      }
+      this.buffer.push(this.robot.Rmotor.power);
+      this.buffer.push(this.robot.Rmotor.dir);
+      this.buffer.push(this.robot.Lmotor.power);
+      this.buffer.push(this.robot.Lmotor.dir);
+    } else if (register == 0x02) {
+      const dirR = byte[1],
+        pR = byte[2];
+      console.log(pR);
+      this.robot.Rmotor.setSpeed(dirR, pR);
+
+      this.buffer.push(this.robot.Rmotor.power);
+      this.buffer.push(this.robot.Rmotor.dir);
+    } else if (register == 0x04) {
+      this.buffer.push(this.robot.Rmotor.angle % 256);
+      this.buffer.push((this.robot.Rmotor.angle >> 8) % 256);
+      this.buffer.push(this.robot.Lmotor.angle % 256);
+      this.buffer.push((this.robot.Lmotor.angle >> 8) % 256);
+    }
+
+    //gestion des leds rgb
+    else if (register == 0x0b) {
+      if (byte.length == 3) {
+        const colorL = this.colors[byte[1] - 1],
+          colorR = this.colors[byte[2] - 1];
+        this.robot.LLed.setColor(colorL);
+        this.robot.RLed.setColor(colorR);
+      } else if (byte.length == 2) {
+        const colorL = this.colors[byte[1] - 1];
+        this.robot.LLed.setColor(colorL);
+      }
+    } else if (register == 0x0c) {
+      const colorR = this.colors[byte[1] - 1];
+      this.robot.RLed.setColor(colorR);
+    }
+
+    // gestion des ir
+    else if (register == 0x1d) {
+      let byte = 0;
+      if (this.robot.irL3.isMarked()) {
+        byte += 32;
+      }
+      if (this.robot.irL2.isMarked()) {
+        byte += 16;
+      }
+      if (this.robot.irL1.isMarked()) {
+        byte += 8;
+      }
+      if (this.robot.irR1.isMarked()) {
+        byte += 4;
+      }
+      if (this.robot.irR2.isMarked()) {
+        byte += 2;
+      }
+      if (this.robot.irR3.isMarked()) {
+        byte += 1;
+      }
+
+      this.buffer.push(byte);
+    }
+  }
+}
+```
+
+La méthode `write` de la classe `i2cPlus` fonction de la même manière que ce la classe i2cLite
 
 ## Les robots
+
+Le code des robots est relativement simple puisqu'il ne fait que mettre en place les différents {ref}`composants`
+
+### Le constructeur
+#### Le maqueen Lite
+
+``` {code-block} js
+---
+linenos: true
+---
+constructor(scene, name, x, y, angle) {
+  //mise  en place de variables
+  this.name = name;
+  this.type = "maqueenLite";
+
+  //mise en place de l'élément body
+  this.body = scene.matter.add
+    .sprite(x, y, "liteBodyPic", undefined, {
+      shape: scene.cache.json.get("liteShape").body,
+    })
+    .setFrictionAir(0)
+    .setAngle(angle);
+
+  //mise en place des moteurs
+  let speedGrowth = function (power) {
+    return (
+      -9e-9 * power ** 4 +
+      7e-6 * power ** 3 -
+      0.0021 * power ** 2 +
+      0.3121 * power -
+      1.2
+    );
+  };
+
+  this.Lmotor = new motor(
+    scene,
+    this.body,
+    (angle / 180) * Math.PI,
+    -35,
+    18,
+    9,
+    43,
+    { x: -10, y: -4 },
+    { x: -10, y: 40 },
+    speedGrowth
+  );
+
+  this.Rmotor = new motor(
+    scene,
+    this.body,
+    (angle / 180) * Math.PI,
+    35,
+    18,
+    9,
+    43,
+    { x: 10, y: -4 },
+    { x: 10, y: 40 },
+    speedGrowth
+  );
+
+  //mise en place du capteur ultrason
+  this.ultrasonic = new ultrasonicD(scene, this.body, 0, -35);
+
+  //mise en place des capteurs infrarouges
+  this.irL = new infra(scene, this.body, -7, -16, 2, false);
+
+  this.irR = new infra(scene, this.body, 7, -16, 2, false);
+
+  //mise en place des leds
+  this.LLed = new led(scene, this.body, -18, -32);
+
+  this.RLed = new led(scene, this.body, 18, -32);
+
+  // mise en place des pins
+  this.pin13 = new pin(this.irL, "isMarked"); //irLeft
+  this.pin14 = new pin(this.irR, "isMarked"); // irRight
+  this.pin8 = new pin(this.LLed, "getOn", "setOn"); //LLed
+  this.pin12 = new pin(this.RLed, "getOn", "setOn"); // RLed
+  this.pin1; // ultrason
+
+  // mise en place de l'i2c
+  this.i2c = new i2cLite(this);
+
+  // ajout du robot à la liste des robots
+  scene.robots.push(this);
+}
+```
+
+L'élement `body` est une sprite qui utilise l'image `liteBodyPic` comme apparence et dont la forme est stockées dans le document JSON qui possède la clé `liteShape`.
+
+
+La fonction `speedGrowth` a été trouvée par mesure, ces mesures se trouvent en annexe.
+
+
+
+``` {code-block} js
+---
+linenos: true
+---
+
+```
 
 ## La caméra
 
