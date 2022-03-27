@@ -38,7 +38,7 @@ class simulation {
           mapLoad,
           mapCreate
         ),
-        new Over(this.robots, width, height),
+        new Over(),
       ],
       physics: {
         default: "matter",
@@ -176,14 +176,10 @@ La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui
 constructor(robots, width, height) {
   super("overlay");
   this.robots = robots;
-  this.height = height;
-  this.width = width;
 }
 ```
-
-Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérité de la classe. `height` et `width` permetteront à l'interface de se placer dans les bord de la fenêtre et `robots` d'accéder au robots pour créer les boutons qui gèrent la caméra en fonction des robots présents dans la simulation.
  
-### La fonction init
+### La fonction `init`
 
 ``` {code-block} js
 init(data) {
@@ -241,7 +237,6 @@ linenos: true
 create() {
   this.buttons = [];
   this.echelle = this.add.image(70, this.height - 30, "echelle");
-  this.follow = -1;
 
   this.add
     .text(10, 60, "-", {
@@ -276,13 +271,11 @@ create() {
       })
       .setInteractive()
       .on("pointerdown", () => {
-        (this.follow = -1),
-          this.cursor.setPosition(15 + this.buttons[0].width, 110),
+        this.keyboardControl = true;
+        this.cursor.setPosition(15 + this.buttons[0].width, 110),
           this.camera.stopFollow();
       })
   );
-
-  this.cursor = this.add.text(0, 0, "<=", { color: "#000", fontSize: 20 });
 
   for (let i = 0; i < this.robots.length; i++) {
     this.buttons.push(
@@ -294,23 +287,37 @@ create() {
         })
         .setInteractive()
         .on("pointerdown", () => {
-          (this.follow = i),
-            this.cursor.setPosition(
-              15 + this.buttons[i + 1].width,
-              140 + 30 * i
-            );
+          this.keyboardControl = false;
+          this.cursor.setPosition(
+            15 + this.buttons[i + 1].width,
+            140 + 30 * i
+          );
+          this.camera.startFollow(this.robots[i].body);
         })
     );
   }
 
-  this.cursor.setPosition(15 + this.buttons[0].width, 113);
+  this.cursor = this.add.text(0, 0, "<=", { color: "#000", fontSize: 20 });
+
+  if (this.robots.length !== 0) {
+    this.keyboardControl = false;
+    this.cursor.setPosition(15 + this.buttons[1].width, 140);
+  } else {
+    this.keyboardControl = true;
+    this.cursor.setPosition(15 + this.buttons[0].width, 113);
+  }
 }
 ```
 
-Les lignes 2-4 de la fonction `create` mettent les varibles élémentaires à la gestion de la caméra, une liste vide pour contenir les boutons, une image qui servira d'échelle et la variable `follow` qui représente l'état de la caméra.
+Les lignes 2-3 de la fonction `create` créent une liste vide pour contenir les boutons et une image qui servira d'échelle.
 
 
 La fonction crée ensuite une série de boutons:
+* Les deux premiers des lignes 5 à 27 servent à modifier le zoom de la caméra
+* Le troisième aux lignes 29-42 sert à ajouter le bouton `Free` qui permettra de contrôler les déplacement de la caméra au clavier
+* Les boutons suivants correspondent au différents robots
+
+La fonction met également le booléen `keyboardControl` en place et crée un curseur pour indiquer l'état de la caméra
 
 ### La fonction update
 
@@ -319,14 +326,32 @@ La fonction crée ensuite une série de boutons:
 linenos: true
 ---
 update() {
-  this.camera.update(this.robots, this);
+  if (this.keyboardControl) {
+    const inputs = this.input.keyboard.addKeys({
+      up: "up",
+      down: "down",
+      left: "left",
+      right: "right",
+    });
+
+    if (inputs.up.isDown) {
+      this.camera.scrollY -= 5;
+    } else if (inputs.down.isDown) {
+      this.camera.scrollY += 5;
+    }
+
+    if (inputs.left.isDown) {
+      this.camera.scrollX -= 5;
+    } else if (inputs.right.isDown) {
+      this.camera.scrollX += 5;
+    }
+  }
 }
 ```
 
-La fonction `update` de la scène `overlay` sert simplement à actualiser la caméra, la fonction `CameraManager.update` est expliquée dans la section traitant de la classe `CameraManager`.
+La fonction `update` de la scène `overlay` sert simplement à utiliser les données du clavier lorsque cela est nécessaire.
 
 ## Les éléments
-
 ### Les constructeurs
 
 Les différents éléments poosèdent tous des constructeurs très similaires, c'est pourquoi ils seront tous traités ensembles.
@@ -336,12 +361,12 @@ Les différents éléments poosèdent tous des constructeurs très similaires, c
 ---
 caption: constructeur de `wallRect`
 ---
-constructor(scene, x, y, width, heigth, angle = 0) {
+constructor(scene, x, y, width, height, angle = 0) {
   this.position = { x: x, y: y };
   this.scale = { x: 1, y: 1 };
   this.angle = angle;
   this.body = scene.matter.add
-    .gameObject(scene.add.rectangle(x, y, width, heigth, 0xff00000))
+    .gameObject(scene.add.rectangle(x, y, width, height, 0xff00000))
     .setStatic(true)
     .setAngle(angle);
 
@@ -603,7 +628,7 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
 });
 ```
 
-L'élément `wheel` est crée des lignes xx à xx, puis l'attache à `reference` depuis `point1` `point2` à l'aide de 4 éléments `constraint` afin de former une structure rigide.
+L'élément `wheel` est créé des lignes 1 à 22, puis est attaché à `reference` depuis `point1` et `point2` à l'aide de 4 éléments `constraint` afin de former une structure rigide.
 
 ```{image} ./figures/constraint.png
 :alt: constraint
@@ -795,7 +820,7 @@ class ultrasonicD {
   }
 ```
 
-Le contructeur crée aux lignes xx-xx un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
+Le contructeur crée aux lignes 11-21 un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
 
 ``` {admonition} Commmentaire
 ---
@@ -1327,8 +1352,6 @@ setAngle(deg) {
 ```
 
 Les méthodes `setPosition` et `setAngle` ne modifie les état que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
-
-## La caméra
 
 
 [^src1]: R https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html (le 7 mars)

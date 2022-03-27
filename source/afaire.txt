@@ -1,10 +1,14 @@
 écrit :
-    modier la diposition des éléments (chap2)
-    stateBlack (chap3)
-    mettre les mesures en annexe
+    conclusion
+    readme
+
+    .mettre les mesures en annexe
+    .glossaire
+    .sources
 
 code:
     réécrire un peu Picture (angle)
     réécrire SeeMark()
-    ajouter class zone
-    checker mouse.constraint
+    .ajouter class zone
+    .checker mouse.constraint
+    faire un seul document avec tout dedans

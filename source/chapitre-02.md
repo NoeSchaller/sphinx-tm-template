@@ -288,3 +288,11 @@ La méthode `i2c.read` permet d'accéder aux octets stockés dans le buffer
 Voir {ref}`le maqueen lite <getDistance>`
 
 ## Modifier la disposition des l'éléments
+
+Une fois les éléments mis en place, il est possible d'en modifier certains paramètres:
+
+| Méthode | Paramètre | Effet | Applicable à | Exemple |
+| :--- | :--- | :--- | :--- | :--- |
+| `setPosition(x, y)` | `x` et `y`: des coordonées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
+| `setAngle(deg)` | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
+|`setScale(x, y)`| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
