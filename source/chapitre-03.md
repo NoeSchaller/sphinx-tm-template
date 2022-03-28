@@ -973,88 +973,188 @@ Les méthodes `setOn` et `setColor` permet de changer l'état de la led, soit av
 ---
 linenos: true
 ---
-write(adresse, byte) {
-  if (adresse == 0x10) {
-    const register = byte[0];
+class pin {
+  constructor(component, read, write) {
+    this.component = component;
+    this.read = read;
+    this.write = write;
+  }
 
-    //gestion des moteur
-    if (register == 0x00) {
-      if (byte.length == 3) {
-        const dirL = byte[1],
-          pL = byte[2];
-        this.robot.Lmotor.setSpeed(dirL, pL);
-      } else if (byte.length == 5) {
-        const dirL = byte[1],
-          pL = byte[2],
-          dirR = byte[3],
-          pR = byte[4];
-        this.robot.Lmotor.setSpeed(dirL, pL);
+  read_digital() {
+    return eval(`this.component.${this.read}()`);
+  }
+
+  write_digital(set) {
+    eval(`this.component.${this.write}(${set})`);
+  }
+}
+```
+
+* `component`: l'élement auquelle appliquer `read` et `write`
+* `read`: une fonction applcable à `component`, ne prend pas d'argument
+* `write`: une fonction applcable à `component`, prend un booléen comme argument
+
+### L'élément `i2cLite`
+
+``` {code-block} js
+---
+linenos: true
+---
+class i2cLite {
+  constructor(robot) {
+    this.robot = robot;
+  }
+
+  write(adresse, byte) {
+    if (adresse == 0x10) {
+      const register = byte[0];
+
+      //gestion des moteur
+      if (register == 0x00) {
+        if (byte.length == 3) {
+          const dirL = byte[1],
+            pL = byte[2];
+          this.robot.Lmotor.setSpeed(dirL, pL);
+        } else if (byte.length >= 5) {
+          const dirL = byte[1],
+            pL = byte[2],
+            dirR = byte[3],
+            pR = byte[4];
+          this.robot.Lmotor.setSpeed(dirL, pL);
+          this.robot.Rmotor.setSpeed(dirR, pR);
+        }
+      } else if (register == 0x02) {
+        const dirR = byte[1],
+          pR = byte[2];
         this.robot.Rmotor.setSpeed(dirR, pR);
       }
-      this.buffer.push(this.robot.Rmotor.power);
-      this.buffer.push(this.robot.Rmotor.dir);
-      this.buffer.push(this.robot.Lmotor.power);
-      this.buffer.push(this.robot.Lmotor.dir);
-    } else if (register == 0x02) {
-      const dirR = byte[1],
-        pR = byte[2];
-      console.log(pR);
-      this.robot.Rmotor.setSpeed(dirR, pR);
-
-      this.buffer.push(this.robot.Rmotor.power);
-      this.buffer.push(this.robot.Rmotor.dir);
-    } else if (register == 0x04) {
-      this.buffer.push(this.robot.Rmotor.angle % 256);
-      this.buffer.push((this.robot.Rmotor.angle >> 8) % 256);
-      this.buffer.push(this.robot.Lmotor.angle % 256);
-      this.buffer.push((this.robot.Lmotor.angle >> 8) % 256);
-    }
-
-    //gestion des leds rgb
-    else if (register == 0x0b) {
-      if (byte.length == 3) {
-        const colorL = this.colors[byte[1] - 1],
-          colorR = this.colors[byte[2] - 1];
-        this.robot.LLed.setColor(colorL);
-        this.robot.RLed.setColor(colorR);
-      } else if (byte.length == 2) {
-        const colorL = this.colors[byte[1] - 1];
-        this.robot.LLed.setColor(colorL);
-      }
-    } else if (register == 0x0c) {
-      const colorR = this.colors[byte[1] - 1];
-      this.robot.RLed.setColor(colorR);
-    }
-
-    // gestion des ir
-    else if (register == 0x1d) {
-      let byte = 0;
-      if (this.robot.irL3.isMarked()) {
-        byte += 32;
-      }
-      if (this.robot.irL2.isMarked()) {
-        byte += 16;
-      }
-      if (this.robot.irL1.isMarked()) {
-        byte += 8;
-      }
-      if (this.robot.irR1.isMarked()) {
-        byte += 4;
-      }
-      if (this.robot.irR2.isMarked()) {
-        byte += 2;
-      }
-      if (this.robot.irR3.isMarked()) {
-        byte += 1;
-      }
-
-      this.buffer.push(byte);
     }
   }
 }
 ```
 
-La méthode `write` de la classe `i2cPlus` fonction de la même manière que ce la classe i2cLite
+Le constructeur reçoit le robot que l'i2c devra modifier.
+
+
+La méthode `write` commence par vérifié que l'adresse correspond à `0x10`, ensuite elle applique différentes fonctions suivant `register` et le nombre d'octet transmis.
+
+### L'élément `i2cPlus`
+
+``` {code-block} js
+---
+linenos: true
+---
+class i2cPlus {
+  constructor(robot) {
+    this.robot = robot;
+    this.colors = [
+      0xff0000, 0x00ff00, 0xffff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffffff,
+      0x808080,
+    ];
+    this.buffer = [];
+  }
+
+  write(adresse, byte) {
+    if (adresse == 0x10) {
+      const register = byte[0];
+
+      //gestion des moteur
+      if (register == 0x00) {
+        if (byte.length == 3) {
+          const dirL = byte[1],
+            pL = byte[2];
+          this.robot.Lmotor.setSpeed(dirL, pL);
+        } else if (byte.length >= 5) {
+          const dirL = byte[1],
+            pL = byte[2],
+            dirR = byte[3],
+            pR = byte[4];
+          this.robot.Lmotor.setSpeed(dirL, pL);
+          this.robot.Rmotor.setSpeed(dirR, pR);
+        }
+        this.buffer.push(
+          this.robot.Rmotor.power,
+          this.robot.Rmotor.dir,
+          this.robot.Lmotor.power,
+          this.robot.Lmotor.dir
+        );
+      } else if (register == 0x02) {
+        const dirR = byte[1],
+          pR = byte[2];
+        this.robot.Rmotor.setSpeed(dirR, pR);
+
+        this.buffer.push(this.robot.Rmotor.power, this.robot.Rmotor.dir);
+      } else if (register == 0x04) {
+        this.buffer.push(
+          this.robot.Rmotor.angle % 256,
+          (this.robot.Rmotor.angle >> 8) % 256,
+          this.robot.Lmotor.angle % 256,
+          (this.robot.Lmotor.angle >> 8) % 256
+        );
+      }
+
+      //gestion des leds rgb
+      else if (register == 0x0b) {
+        if (byte.length >= 3) {
+          const colorL = this.colors[byte[1] - 1],
+            colorR = this.colors[byte[2] - 1];
+          this.robot.LLed.setColor(colorL);
+          this.robot.RLed.setColor(colorR);
+        } else if (byte.length == 2) {
+          const colorL = this.colors[byte[1] - 1];
+          this.robot.LLed.setColor(colorL);
+        }
+      } else if (register == 0x0c) {
+        if (byte.length >= 2) {
+          const colorR = this.colors[byte[1] - 1];
+          this.robot.RLed.setColor(colorR);
+        }
+      }
+
+      // gestion des ir
+      else if (register == 0x1d) {
+        let byte = 0;
+        if (this.robot.irL3.isMarked()) {
+          byte += 32;
+        }
+        if (this.robot.irL2.isMarked()) {
+          byte += 16;
+        }
+        if (this.robot.irL1.isMarked()) {
+          byte += 8;
+        }
+        if (this.robot.irR1.isMarked()) {
+          byte += 4;
+        }
+        if (this.robot.irR2.isMarked()) {
+          byte += 2;
+        }
+        if (this.robot.irR3.isMarked()) {
+          byte += 1;
+        }
+
+        this.buffer.push(byte);
+      }
+    }
+  }
+
+  read(adresse, nb) {
+    if (adresse == 0x10) {
+      let get = [];
+
+      for (let i = 0; i < nb; i++) {
+        get.push(this.buffer[this.buffer.length - i - 1]);
+      }
+      return get;
+    }
+  }
+}
+```
+
+Le contructeur reçoit le robot à modifier, il prépare également un buffer vide et une liste de couleurs que peuvent prendre les leds rgbs.
+
+
+La méthode `write` de la classe `i2cPlus` fonction de la même manière que `i2cLite`, il y a toutefois plus de registres disponibles. De plus certains registre ajoutent des données au buffer afin qu'elle puisse être lue par la méthode `read`. Les éléments ainsi ajoutés sont ajouté dans le seul inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin.
 
 ## Les robots
 
@@ -1071,6 +1171,8 @@ constructor(scene, name, x, y, angle) {
   //mise  en place de variables
   this.name = name;
   this.type = "maqueenLite";
+  this.angle = angle;
+  this.position = { x: x, y: y };
 
   //mise en place de l'élément body
   this.body = scene.matter.add
@@ -1154,6 +1256,8 @@ constructor(scene, name, x, y, angle) {
   //mise  en place de variables
   this.name = name;
   this.type = "maqueenPlus";
+  this.angle = angle;
+  this.position = { x: x, y: y };
 
   //mise en place de l'élément body
   this.body = scene.matter.add
@@ -1176,7 +1280,7 @@ constructor(scene, name, x, y, angle) {
   this.Lmotor = new motor(
     scene,
     this.body,
-    angle / 180 * Math.PI,
+    (angle / 180) * Math.PI,
     -45,
     27,
     9,
@@ -1189,7 +1293,7 @@ constructor(scene, name, x, y, angle) {
   this.Rmotor = new motor(
     scene,
     this.body,
-    angle / 180 * Math.PI,
+    (angle / 180) * Math.PI,
     45,
     27,
     9,
@@ -1252,17 +1356,27 @@ update() {
   this.irR.update();
   this.LLed.update();
   this.RLed.update();
+  this.position = { x: this.body.x, y: this.body.y };
+  this.angle = this.body.angle;
 }
 
 setPosition(x, y) {
   this.body.setPosition(x, y);
   this.Lmotor.wheel.setPosition(
-    x + this.Lmotor.delta * Math.cos(this.Lmotor.relAngle),
-    y + this.Lmotor.delta * Math.sin(this.Lmotor.relAngle)
+    x +
+      this.Lmotor.deltaOrigin *
+        Math.cos(this.Lmotor.rotationOrigin + this.body.rotation),
+    y +
+      this.Lmotor.deltaOrigin *
+        Math.sin(this.Lmotor.rotationOrigin + this.body.rotation)
   );
   this.Rmotor.wheel.setPosition(
-    x + this.Rmotor.delta * Math.cos(this.Rmotor.relAngle),
-    y + this.Rmotor.delta * Math.sin(this.Rmotor.relAngle)
+    x +
+      this.Rmotor.deltaOrigin *
+        Math.cos(this.Rmotor.rotationOrigin + this.body.rotation),
+    y +
+      this.Rmotor.deltaOrigin *
+        Math.sin(this.Rmotor.rotationOrigin + this.body.rotation)
   );
 }
 
@@ -1297,7 +1411,7 @@ linenos: true
 caption: les méthodes du maqueen Plus
 ---
 getDistance(){
-  return this.ultrasonic.getDistance()
+  return this.ultrasonic.getDistance();
 }
 
 update() {
@@ -1312,42 +1426,53 @@ update() {
   this.irR3.update();
   this.LLed.update();
   this.RLed.update();
+  this.position = { x: this.body.x, y: this.body.y };
+  this.angle = this.body.angle;
 }
 
 setPosition(x, y) {
   this.body.setPosition(x, y);
   this.Lmotor.wheel.setPosition(
-    x + this.Lmotor.delta * Math.cos(this.Lmotor.startAngle),
-    y + this.Lmotor.delta * Math.sin(this.Lmotor.startAngle)
+    x +
+      this.Lmotor.deltaOrigin *
+        Math.cos(this.Lmotor.rotationOrigin + this.body.rotation),
+    y +
+      this.Lmotor.deltaOrigin *
+        Math.sin(this.Lmotor.rotationOrigin + this.body.rotation)
   );
   this.Rmotor.wheel.setPosition(
-    x + this.Rmotor.delta * Math.cos(this.Rmotor.startAngle),
-    y + this.Rmotor.delta * Math.sin(this.Rmotor.startAngle)
+    x +
+      this.Rmotor.deltaOrigin *
+        Math.cos(this.Rmotor.rotationOrigin + this.body.rotation),
+    y +
+      this.Rmotor.deltaOrigin *
+        Math.sin(this.Rmotor.rotationOrigin + this.body.rotation)
   );
 }
 
-setAngle(deg) {
-  this.body.setAngle(deg);
+  setAngle(deg) {
+    this.body.setAngle(deg);
 
-  this.Lmotor.wheel.setPosition(
-    this.body.x +
-      this.Lmotor.delta *
-        Math.cos((deg / 180) * Math.PI + this.Lmotor.relAngle),
-    this.body.y +
-      this.Lmotor.delta *
-        Math.sin((deg / 180) * Math.PI + this.Lmotor.relAngle)
-  );
-  this.Lmotor.wheel.setAngle(deg);
+    this.Lmotor.wheel.setPosition(
+      this.body.x +
+        this.Lmotor.deltaOrigin *
+          Math.cos((deg / 180) * Math.PI + this.Lmotor.rotationOrigin),
+      this.body.y +
+        this.Lmotor.deltaOrigin *
+          Math.sin((deg / 180) * Math.PI + this.Lmotor.rotationOrigin)
+    );
+    this.Lmotor.wheel.setAngle(deg);
 
-  this.Rmotor.wheel.setPosition(
-    this.body.x +
-      this.Rmotor.delta *
-        Math.cos((deg / 180) * Math.PI + this.Rmotor.relAngle),
-    this.body.y +
-      this.Rmotor.delta *
-        Math.sin((deg / 180) * Math.PI + this.Rmotor.relAngle)
-  );
-  this.Rmotor.wheel.setAngle(deg);
+    this.Rmotor.wheel.setPosition(
+      this.body.x +
+        this.Rmotor.deltaOrigin *
+          Math.cos((deg / 180) * Math.PI + this.Rmotor.rotationOrigin),
+      this.body.y +
+        this.Rmotor.deltaOrigin *
+          Math.sin((deg / 180) * Math.PI + this.Rmotor.rotationOrigin)
+    );
+    this.Rmotor.wheel.setAngle(deg);
+  }
 }
 ```
 
