@@ -16,13 +16,3 @@ Développement d'un simulateur web du robot Maqueen
     chapitre-03.md
     conclusion.md
     bibliographie.md
-
-
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`

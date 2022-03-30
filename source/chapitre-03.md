@@ -3,10 +3,10 @@
 
 COMMENTER LA STRUCTURE DES DOCUMENTS
 ### Conventions
-Dans ce travail les variables représentant des angles possèdent "angle" dans leur nom lorsqu'il s'agit de degrés et "rotation" s'il s'agit de radians.
+Dans ce travail, les variables représentant des angles possèdent "angle" dans leur nom lorsqu'il s'agit de degrés et "rotation" s'il s'agit de radians.
 
 ## La classe simulation
-La classe `simulation` constitue la coeur du simulateur. Cette classe a deux fonction principale: elle crée l'interface graphique dans lequel se déroule la simulation et elle regroupe les principaux éléments de celle-ci afin de rendre accessibles leur différentes méthodes.
+La classe `simulation` constitue le cœur du simulateur. Cette classe a deux fonctions principales: elle crée l'interface graphique dans lequel se déroule la simulation et elle regroupe les principaux éléments de celle-ci afin de rendre accessibles leur différentes méthodes.
 ``` {code-block} js
 ---
 linenos: true
@@ -61,16 +61,17 @@ class simulation {
 }
 
 ```
-Ce code constitue l'intégralité de la classe simulation et il les deux but de la classe aisément indentifiable:
-* La ligne 18 indique à Phaser d'utiliser WEBGL plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tout les navigateurs, il est plus performant et tout de mêm très répandu.
-* Les lignes 11, 12 et 13 créent des listes vides dans lesquelles s'ajouteront les différent éléments lorqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
+Ce code constitue l'intégralité de la classe simulation, les deux buts de la classe sont aisément identifiables:
+* Les lignes 11, 12 et 13 créent des listes vides dans lesquelles s'ajouteront les différent éléments lorsqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
 * Les lignes 14-46 initient l'interface Phaser en fonction des différents paramètres.
+* La ligne 18 indique à Phaser d'utiliser WEBGL plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tous les navigateurs, il est plus performant et tout de même très répandu.
+
 
 ``` {admonition} Commentaire
 ---
 class: note
 ---
-Les lignes 20-29 créent les différentes scènes utilisées et leur donne certains paramètres essentiels. Il faut toutefois noter que seule la scène `Simul` démarre et que les autres seront lancées depuis celle-ci.
+Les lignes 20-29 créent les différentes scènes utilisées et leur donnent certains paramètres essentiels. Il faut toutefois noter que seule la scène `Simul` démarre et que les autres seront lancées depuis celle-ci.
 
 Les lignes 37-45 mettent en place un plugin qui servira à simuler les capteurs ultrason des robots:
 * La ligne 41 assigne une clé de référence au plugin
@@ -80,7 +81,7 @@ Les lignes 37-45 mettent en place un plugin qui servira à simuler les capteurs 
 
 ## La scène principale
 
-La premère scène lancée par Phaser est la scène `Simul`. Comme cette scène met en place l'environemment du robots il est donc logique que les autres scènes démarre après pour qu'elle puissent s'adapter aux éléments déjà en place.
+La première scène lancée par Phaser est la scène `Simul`. Comme cette scène met en place l'environemment du robot, il est donc logique que les autres scènes démarrent après pour qu'elle puissent s'adapter aux éléments déjà en place.
 
 ### Le contructeur
 
@@ -98,11 +99,17 @@ linenos: true
 }
 ```
 
-Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérité de la classe `game`: `mapLoad` et `mapCreate` correspondent aux fonctions définie par l'utilisateur. `robots` `walls` et `marks` représentent les listes auquelles les différents éléments seront ajoutés.
+Le contructeur de la scène s'occupe simplement de recevoir et stocker les différents paramètres hérités de la classe `game`.
+
+
+`mapLoad` et `mapCreate` correspondent aux fonctions définie par l'utilisateur.
+
+
+`robots`, `walls` et `marks` représentent les listes auxquelles les différents éléments seront ajoutés.
 
 ### La fonction preload
 
-La fonction preload charge les ressources nécéssaire pour les robots et les éventuelles images nécéssaire à l'utilisateur.
+La fonction preload charge les ressources nécéssaires pour les robots et les éventuelles ressources utiles à l'utilisateur.
 
 ``` {code-block} js
 ---
@@ -125,14 +132,14 @@ preload() {
 }
 ```
 
-Le programme charge des documents JSON qui contiennent les informations quant à la forme des zone de collisions des robots aux lignes 2 et 3 ainsi que des sprites pour leur aspect visuel.
-`mapLoad` est également exécutée et charge les fichiers nécessaire à l'utilisateur avec comme argument la scène principale de la simulation
+Le programme charge des documents JSON qui contiennent les informations quant à la forme des zones de collisions des robots aux lignes 2 et 3 ainsi que des sprites pour leur aspect visuel.
+`mapLoad` est également exécutée et charge les fichiers utiles à l'utilisateur avec comme argument la scène principale de la simulation.
 
 ### La fonction create
 
-La fonction a deux fonction principales:
+La fonction a deux buts principaux:
 * exécuter la fonction `mapCreate` et donc mettre en place l'environnement des robots
-* démarrer les autres scènes nécéssaire au programme
+* démarrer la scène `overlay`
 
 ``` {code-block} js
 ---
@@ -147,11 +154,11 @@ create() {
 }
 ```
 
-Le permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting quel éléments il doit considérer. La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
+Le permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
 
 ### La fonction update
 
-Le seul usage de la fonction `update` est de constamment mettre à jour les robots. Ce sont les seuls éléments concernés car ces sont les seuls éléments à interagir avec d'autres. De plus, la plupart des composants du robots ne sont pas attaché à ce dernier: Phaser ne le pertmettant pas aisément et doivent donc être replacé relativement au robot à chaque actualisation de la simulation.
+La seule utilité de la fonction `update` est de constamment mettre à jour les robots. Les autres éléments ne sont pas concernés car ils sont statiques.
 
 ``` {code-block} js
 ---
@@ -164,18 +171,17 @@ update() {
 }
 ```
 
-Les lignes 2 à 4 du code font une itération à travers la liste des robots et la ligne 3 actualise les différents robots.
+Les lignes 2 à 4 du code parcourent la liste des robots et la ligne 3 actualise les différents robots.
 
 ## La scène overlay
 
-La scène `overlay` a pour objectif la gestion de la caméra et des bouttons qui permet de la manipuler. La création d'une scène dédiée à cet usage est essentielle car elle permet d'éviter d'avoir des interactions indésirables entre des éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter que l'interface se déplacer en même que la caméra puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
+La scène `overlay` a pour objectif la gestion de la caméra et des boutons qui permet de la manipuler. La création d'une scène dédiée à cet usage est essentielle car elle permet d'éviter d'avoir des interactions indésirables entre les éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter à l'interface de se déplacer en même temps que la caméra, puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
 
 ### Le constructeur
 
 ``` {code-block} js
-constructor(robots, width, height) {
+constructor() {
   super("overlay");
-  this.robots = robots;
 }
 ```
  
@@ -188,7 +194,7 @@ init(data) {
 }
 ```
 
-La fonction `init` permet de recevoir des informations lorsque la scène est initialisée. Contrairement au constructeur qui est appelé lors de la création de la classe `Game` cette fonction est appellée lorsque la scène démarre alors que le constructeur est appellé lorsque la scène est créée avant que la simulation ait démarrée.
+La fonction `init` permet de recevoir des informations lorsque la scène est initialisée. Contrairement au constructeur qui est appelé lors de la création de la classe `Game` cette fonction est appellée lorsque la scène démarre.
 
 ``` {code-block} js
 scene: [
@@ -210,7 +216,7 @@ this.scene.launch("overlay", [this.robots, this.cameras.main]);
 ```
 
 Cette ligne sert à initialiser la scène `overlay` depuis une autre scène, le second argument est transmis à la fonction `init`.
-La fonction `init` est donc essentielle car est permet à la scène `overlay` de s'adapter au éléments présents dans la simulation. Ainsi dans ce cas, la fonction reçoit la scène principale et il lui sera donc possible d'en extraire les données nécessaires à la scène `overlay`
+La fonction `init` est donc essentielle car elle permet à la scène `overlay` de s'adapter au éléments présents dans la simulation. Dans ce cas, la fonction reçoit la liste des robots et la caméra de la scène principale.
 
 ### La fonction preload
 
@@ -272,8 +278,8 @@ create() {
       .setInteractive()
       .on("pointerdown", () => {
         this.keyboardControl = true;
-        this.cursor.setPosition(15 + this.buttons[0].width, 110),
-          this.camera.stopFollow();
+        this.cursor.setPosition(15 + this.buttons[0].width, 110);
+        this.camera.stopFollow();
       })
   );
 
@@ -314,10 +320,10 @@ Les lignes 2-3 de la fonction `create` créent une liste vide pour contenir les 
 
 La fonction crée ensuite une série de boutons:
 * Les deux premiers des lignes 5 à 27 servent à modifier le zoom de la caméra
-* Le troisième aux lignes 29-42 sert à ajouter le bouton `Free` qui permettra de contrôler les déplacement de la caméra au clavier
-* Les boutons suivants correspondent au différents robots
+* Le troisième aux lignes 29-42 sert à ajouter le bouton `Free` qui permettra de contrôler les déplacements de la caméra au clavier
+* Les boutons suivants correspondent aux différents robots
 
-La fonction met également le booléen `keyboardControl` en place et crée un curseur pour indiquer l'état de la caméra
+La fonction met également le booléen `keyboardControl` en place et crée un curseur pour indiquer l'état de la caméra.
 
 ### La fonction update
 
@@ -354,7 +360,7 @@ La fonction `update` de la scène `overlay` sert simplement à utiliser les donn
 ## Les éléments
 ### Les constructeurs
 
-Les différents éléments poosèdent tous des constructeurs très similaires, c'est pourquoi ils seront tous traités ensembles.
+Les différents éléments possèdent tous des constructeurs très similaires, c'est pourquoi ils seront tous traités ensemble.
 
 
 ``` {code-block} js
@@ -450,13 +456,13 @@ constructor(scene, key, x, y, scaleX = 1, scaleY = 1) {
 ```
 ---
 
-Le constructeur des différentes classes ne remplit que deux objectifs: le premier est de créer un object Phaser rectangulaire statique en fonction des paramètres introduit par l'utilisateur, le second est de s'ajouter à la liste des murs afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image `picture` représente également la clef de l'image source. Les éléments décrivant un mur ajoute également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détecté par les robots.
+Les constructeurs des différentes classes ne remplissent que deux objectifs: le premier est de créer un object Phaser rectangulaire statique en fonction des paramètres introduit par l'utilisateur, le second est de s'ajouter à la liste leur correspondant afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image, `picture` représente alors la clef de l'image source (voir {ref}`les capteurs infrarouges<infra>`). Les éléments décrivant un mur ajoute également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détectés par les capteurs infrarouges.
 
 ``` {admonition} Remarque
 ---
 class: note
 ---
-La liste des murs contenu dans la classe `simulation` ne peut pas être utilisée à la place de `RaycasterDomain` car elle contient des objets `wall` là où le plugin demande des élément Phaser, en l'occurence `wall.body`
+La liste des murs contenue dans la classe `simulation` ne peut pas être utilisée à la place de `RaycasterDomain` car elle contient des objets `wall` là où le plugin demande des éléments Phaser, en l'occurence `wall.body`
 ```
 
 ### Les méthodes
@@ -483,7 +489,7 @@ Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour
 ## Les composants des robots
 ### La classe motor
 #### Le constructeur
-##### Explications des paramètres
+##### Explication des paramètres
 ``` {code-block} js
 constructor(
   scene,
@@ -500,13 +506,12 @@ constructor(
 ```
 * `scene`: la scène à laquelle le robot est ajouté
 * `reference`: l'objet Phaser auquel la roue doit être attachée
-* `Botangle`: l'angle du robot lorsqu'il est chargé
 * `x`: la coordonée en x de la roue par rapport à la position de `reference`
 * `y`: la coordonée en y de la roue par rapport à la position de `reference`
 * `width`: la largeur de la roue en pixel
 * `height`: la hauteur de la roue en pixel
-* `point1`: un objet Javascript ayant une clef x et un clef y, il représente un point d'attache pour la roue
-* `point2`: un objet Javascript ayant une clef x et un clef y, il représente un point d'attache pour la roue
+* `point1`: un objet Javascript ayant une clef x et y, il représente un point sur reference pour y attacher la roue
+* `point2`: un objet Javascript ayant une clef x et y, il représente un point sur reference pour y attacher la roue
 * `powToSpeed`: une fonction qui représente la croissance de la vitesse angulaire de la roue en fonction de la puissance
 
 #### Explications des paramètres calculés
@@ -518,7 +523,6 @@ linenos: true
 constructor(
   scene,
   reference,
-  robotRotation,
   x,
   y,
   width,
@@ -552,7 +556,10 @@ constructor(
    rotationPoint2 = Math.atan2(point2.y, point2.x);
 ```
 
-Les éléments `delta` repsésente la distance avec `reference` et `rotation` les angles  par rapport à l'horizontal.
+Les éléments `delta` représentent la distance l'origine de `reference` et l'objet.
+
+
+Les éléments `rotation` représentent les angles par rapport à l'horizontal.
 
 #### L'élément `wheel`
 
@@ -661,7 +668,7 @@ setSpeed(dir, power) {
 }
 ```
 
-Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètre en nombres utilisable par Phaser, il a été trouvé par expérience.
+Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètres en nombres utilisables par Phaser, il a été trouvé de manière expérimentale.
 
 #### La méthode `update`
 
@@ -690,8 +697,12 @@ update() {
 }
 ```
 
-La méthode `update` commence par calculer la vitesse de rotation du moteur. Les objects Phaser possède une propriété `speed` mais celle-ci ne semble pas être opérationnelle, en effet elle augmente lorsque le robot bute contre un obstacle. Ensuite la méthode fait avancer la roue en fonction de la vitesse.
+La méthode `update` commence par calculer la vitesse de rotation du moteur. Les objects Phaser possèdent une propriété `speed` mais celle-ci ne semble pas être opérationnelle, en effet elle augmente lorsque le robot bute contre un obstacle.
 
+
+Ensuite la méthode fait avancer la roue en fonction de la vitesse.
+
+(infra)=
 ### Les capteurs infrarouges
 #### Le constructeur
 
@@ -775,6 +786,7 @@ update() {
 
 `update` sert à la fois à replacer le capteur par rapport à la référence et à actualiser son apparence e nfonction de son état.
 
+(ultra)=
 ### Les capteurs ultrasons
 #### Explication des paramètres
 

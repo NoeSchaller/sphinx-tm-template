@@ -3,17 +3,16 @@
 ### La classe simulation
 Tout comme Phaser, la simulation repose principalement sur une seule et unique classe: la classe simulation. Lancer la simulation ne nécessite donc que d'appeler celle-ci avec les bons paramètres.
 ```{code-block} js
-sim = new simulation(width, height, id, map, background)
+sim = new simulation(width, height, id, mapLoad, marCreate, background)
 ```
 * `width` et `height`: définissent les dimensions de l'interface graphique
 * `id`: l'id d'un élement canvas dans le code HTML
 * `mapLoad`:  une fonction qui permet de charger des images
 * `mapCreate`: une fonction qui permet de mettre en place l'environnement
 * `background`: une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifé, le fond est beige
-* `mode`: prototype de mise en place
 
 ### Les fonctions mapLoad et mapCreate
-Les fonctions `mapLoad` et `mapCreate` sont les fonctions qui permettent de placer les différents éléments dans la simulation. Chaque fonction correspond à un état de la scène: `load` et `create `. Elles possèdent chacune un argument qui leur permet de recevoir la scène principale de la simulation afin qu'elles puissent interagir avec:
+Les fonctions `mapLoad` et `mapCreate` sont les fonctions qui permettent de placer les différents éléments dans la simulation. Chaque fonction correspond à un état de la scène: `load` et `create`. Elles possèdent chacune un argument qui leur permet de recevoir la scène principale de la simulation afin qu'elles puissent interagir avec:
 
 ``` {code-block} js
 function mapLoad(scene) {
@@ -23,7 +22,7 @@ function mapCreate(scene) {
 }
 ```
 
-Les prochains paragraphes présentent les utilisations possibles de ces fonctions. Il est toutefois important de savoir que n'importe qu'elle instruction reconnue par Phaser peut y être exécutée.
+Les prochains paragraphes présentent les utilisations possibles de ces fonctions. Il est toutefois important de savoir que n'importe quelle instruction reconnue par Phaser peut y être exécutée.
 
 #### la fonction mapLoad
 
@@ -41,7 +40,7 @@ function mapLoad(scene) {
 
 #### la fonction mapCreate
 
-La fonction `mapCreate` permet d'ajouter les élements initaux à la simulation. Chaque élément est ajouté grâce à une classe spécifique:
+La fonction `mapCreate` permet d'ajouter les éléments initaux à la simulation. Chaque élément est ajouté grâce à une classe spécifique:
 
 ``` {code block} js 
 new wallRect(scene, x, y, width, height, angle);
@@ -95,7 +94,7 @@ Ce code ajoute une marque circulaire
 ``` {code-block} js
 new Picture(scene, key, x, y, scaleX, scaleY)
 ```
-Ce code ajoute image dont les zones foncées sont détectées comme des marques
+Ce code ajoute une image dont les zones foncées sont détectées comme des marques
 * `scene` : la scène dans laquelle ajouter l'élément, toujours la scène principale 
 * `key` : la clé d'une image péalablement chargée dans la fonction `mapLoad`
 * `x` : la coordonnée horizontale de l'élément
@@ -108,9 +107,9 @@ Ce code ajoute image dont les zones foncées sont détectées comme des marques
 new maqueenPlus(scene, name, x, y, angle)
 new maqueenLite(scene, name, x, y, angle)
 ```
-Ce code ajoute un Maqueen plus puis un Maqueen Lite
+Ce code ajoute un Maqueen Plus puis un Maqueen Lite
 * `scene` : la scène dans laquelle ajouter l'élément, toujours la scène principale 
-* `name` : une chaîne de caractère utilisée pour nommer le robots dans le menu de la caméra
+* `name` : une chaîne de caractère utilisée pour nommer le robot dans le menu de la caméra
 * `x` : la coordonnée horizontale de l'élément
 * `y` : la coordonnée verticale de l'élément
 * `angle` : l'angle de l'élément en degrés
@@ -121,10 +120,10 @@ Ce code ajoute un Maqueen plus puis un Maqueen Lite
 ---
 class: note
 ---
-Il faut noter que la caméra commence par défaut en vue libre: "Free".  
+Il faut noter que la caméra commence par défaut sur le premier robot ajouté.  
 Dès lors, il est possible de choisir le point de vue de celle-ci à l'aide des boutons en haut à droite:
 * Les +/- pour changer le zoom
-* Les boutons gris en dessous pour choisir quel robot est suivi par la caméra
+* Les boutons gris en-dessous pour choisir quel robot est suivi par la caméra
 * Le bouton "Free" laisse l'utilisateur déplacer la caméra lui-même à l'aide des flèches directionnelles
 ```
 À partir de là, l'utilisateur peut user des robots créés comme il le souhaite à l'aide des commandes détaillées ci-dessous.
@@ -156,7 +155,7 @@ function mapCreate(scene) {
 
 sim = new simulation(600, 600, "game", mapLoad, mapCreate);
 ```
-Ce code afficher la simularion dans un éléments HTML canvas dont l'id est `game`.
+Ce code affiche la simulation dans un élément HTML canvas dont l'id est `game`.
 
 ```{image} ./figures/mapJs.png
 :alt: map.js
@@ -165,8 +164,11 @@ Ce code afficher la simularion dans un éléments HTML canvas dont l'id est `gam
 ```
 
 ## Contrôler les robots
-Une fois que la simulation est créé, elle contient une liste nommée `robots` et dont les objets sont programmés pour contrôler les robots. Ainsi, pour sélectionner un robot, il faut aller le chercher dans cette liste, les robots sont dans le même ordre dans cette liste dans la fonction `mapCreate`.
+Une fois que la simulation est créée, elle contient les listes `marks` `walls` et `robots`. Ces listes contiennent les éléments de la simulation classés selon leur type. Les élément sont triés dans leur liste en fonction de l'ordre de leur ajout à la simulation.
 ```{code-block} js
+---
+caption: Ainsi le premier robot ajouté peut être sélectionner ainsi
+---
 sim.robots[0]
 ```
 
@@ -174,20 +176,20 @@ sim.robots[0]
 ---
 class: warning
 ---
-Dans cet exemple ainsi que tout les suivants, on suppose que la simulation est appelée `sim`.
+Dans cet exemple ainsi que tous les suivants, on suppose que la simulation est appelée `sim`.
 ```
-Une fois le robot séléctionné, il ne reste qu'à choisir un des composants simulés du robot. En effet à l'image du Maqueen, le robot simulé possède également des commandes basées sur des pins et de l'i2c.
-### Le Maqueen lite
+
+### Le Maqueen Lite
 #### L'i2c
 L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
 
 ```{code-block} js
 sim.robot.i2c.write(adresse, [register, dir1, power1, dir2, power2])
 ```
-* `adresse`: permet de choisir à quelle puce les données sont envoyés: les moteurs sont contrôlés par la puce 0x10
+* `adresse`: permet de choisir à quelle puce les données sont envoyées: les moteurs sont contrôlés par la puce `0x10`
 * `register`: la référence de la commande à utiliser: 
   * `0x00`: qui permet de modifier l'état du moteur gauche avec `dir1` et `power2` et optionnellement du moteur droit avec `dir2` et `power2`.
-  * `0x02`: ne prend que `` et `` et l'applique au moteur droit
+  * `0x02`: ne prend que `dir1` et `power1` pour les appliquer au moteur droit
 * `dir`: définit la direction du moteur, 0 pour le stopper, 1 pour aller vers l'avant et 2 pour reculer
 * `power`: la vitesse de rotation des moteurs
 
@@ -209,7 +211,7 @@ sim.robots[0].i2c.write(0x10, [0x00, 1, 200, 2, 150])
 ---
 class: note
 ---
-Ce code fait avancer la roue gauche à une puissance de 200 et reculer la roue droite à une puissance de 150
+Ce code fait avancer le moteur gauche à une puissance de 200 et reculer le moteur droit à une puissance de 150
 ```
 
 #### Les pins
@@ -224,8 +226,8 @@ Les robots possèdent plusieurs pins qui prennent en charge la gestion des donn�
 
 
 Chaque pin est doté de deux fonctions, l'une pour modifier son état et l'autre pour le lire.
-* read_digital(): retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
-* write_digital(bool): prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)  
+* `read_digital()`: retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
+* `write_digital(bool)`: prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)  
 
 ```{code-block} js
 ---
@@ -239,21 +241,21 @@ sim.robots[0].pin14.read_digital()
 ---
 class: note
 ---
-La première ligne allume la led gauche et la seconde retourne true si le capteur infrarouge droit se trouve au dessus d'une marque ou d'une portion foncée d'une image
+La première ligne allume la led gauche et la seconde retourne `true` si le capteur infrarouge droit se trouve au-dessus d'une marque ou d'une portion foncée d'une image
 ```
 
 (getDistance)=
 #### La méthode `getDistance`
 
-Comme il est très complexe de reproduire le fonctionnement du capteur ultrason de manière fidèle au robot original, il existe simplement une méthode qui retourne la distance en centimètre avec le mur le plus proche.
+Comme il est très complexe de reproduire le fonctionnement du capteur ultrason de manière fidèle au robot original, il existe simplement une méthode qui retourne la distance en centimètres avec le mur le plus proche.
 
 ``` {code-block} js
 sim.robot[0].getDistance()
 ```
 
-### le Macqueen plus
+### le Macqueen Plus
 
-Toutes les fonctionnalités du Macqueen plus sont contrôlable via l'i2c, soit avec `i2c.write` ou avec `i2c.read`. Les fonctions `i2c.write` ajoutent des données au buffer qui sont ensuite accessibles grâce à la méthode `i2c.read`. Le maqueen plus possède également une méthode `getDistance` qui permet d'utiliser le capteur ultrason.
+Toutes les fonctionnalités du Macqueen plus sont contrôlables via l'i2c. Les fonctions `i2c.write` ajoutent des données au buffer qui sont ensuite accessibles grâce à la méthode `i2c.read`. Le maqueen plus possède également une méthode `getDistance` qui permet d'utiliser le capteur ultrason.
 
 #### La méthode `i2c.write`
 
@@ -267,11 +269,11 @@ sim.robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 
 | Registre    | Effet    | Octet | Octet(s) ajouté au buffer |
 | :--- | :--- | :--- | :--- |
-| `0x00`    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
-  | `0x02` | voir Maqueen lite | - | `dirR`, `powerR` |
-| `0x0b` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | Aucun |
-| `0x0c` | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
-| `0x1d` | Aucun | Aucun | Un octet donc l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteurs le plus à droite et le premier le plus à gauche) |
+| `0x00 `    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
+  | `0x02 ` | voir Maqueen lite | - | `dirR`, `powerR` |
+| `0x0b ` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | Aucun |
+| `0x0c ` | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
+| `0x1d ` | Aucun | Aucun | Un octet dont l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteur le plus à droite et le premier le plus à gauche) |
 
 #### La méthode `i2c.read`
 
@@ -279,7 +281,7 @@ sim.robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 sim.robot[1].i2c.read(adresse, nb)
 ```
 * `adresse`: l'adresse de la puce
-* `nb`: le nombre d'octet à lire
+* `nb`: le nombre d'octets à lire
 
 La méthode `i2c.read` permet d'accéder aux octets stockés dans le buffer
 
@@ -287,12 +289,12 @@ La méthode `i2c.read` permet d'accéder aux octets stockés dans le buffer
 
 Voir {ref}`le maqueen lite <getDistance>`
 
-## Modifier la disposition des l'éléments
+## Modifier la disposition des éléments
 
 Une fois les éléments mis en place, il est possible d'en modifier certains paramètres:
 
 | Méthode | Paramètre | Effet | Applicable à | Exemple |
 | :--- | :--- | :--- | :--- | :--- |
-| `setPosition(x, y)` | `x` et `y`: des coordonées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
-| `setAngle(deg)` | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
-|`setScale(x, y)`| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
+| `setPosition(x, y)    ` | `x` et `y`: des coordonées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
+| `setAngle(deg)    ` | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
+|`setScale(x, y)    `| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
