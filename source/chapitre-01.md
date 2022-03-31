@@ -254,9 +254,9 @@ Les différents attributs et méthodes sont documentés par Phaser[^src9].
 [^src1]: PHOTON STORM "Welcome to Phaser 3" Consulté le 04 janvier 2022 <<https://phaser.io/phaser3>>
 [^src2]: PHOTON STORM "Phaser - HTML5 Game Framework" Consulté le 04 janvier 2022 <<https://github.com/photonstorm/phaser>>
 [^src3]: PHOTON STORM "Class: Game" Consulté le 05 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Game.html>>
-[^src4]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>>
-[^src5]: PHOTON STROM "How Scenes Work" Consulté le 7 janvier 2022 <<https://phaser.io/phaser3/contributing/part5>>
-[^src6]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>>
-[^src7]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html>>
-[^src8]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>>
-[^src9]: R <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>>
+[^src4]: PHOTON STORM "Phaser.Types. Core: GameConfig" Consulté le 05 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Types.Core.html#.GameConfig>>
+[^src5]: PHOTON STORM "How Scenes Work" Consulté le 7 janvier 2022 <<https://phaser.io/phaser3/contributing/part5>>
+[^src6]: PHTON STORM "Class: SceneManager" Consulté le 7 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.SceneManager.html>>
+[^src7]: PHOTON STORM "Namespace: GameObjects" Consulté le 7 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html>>
+[^src8]: PHOTON STORM "Namespace: Geom" Consulté le 10 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>>
+[^src9]: PHOTON STORM "Namespace: Components"  Consulté le 10 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>>

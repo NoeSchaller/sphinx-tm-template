@@ -2,14 +2,10 @@
     conclusion
     readme (mise en place de l'API)
 
-    .mettre les mesures en annexe
+    .mettre les mesures en annexe + code
     .glossaire
-    .sources
 
 code:
-    réécrire un peu Picture (angle)
-    réécrire SeeMark()
     .ajouter class zone
-    .checker mouse.constraint
-    .ajout de méthode à simulation
+    .....ajout de méthode à simulation
     faire un seul document avec tout dedans

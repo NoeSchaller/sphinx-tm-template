@@ -440,16 +440,16 @@ constructor(scene, x, y, radius) {
 ---
 caption: constructeur de `Picture`
 ---
-constructor(scene, key, x, y, scaleX = 1, scaleY = 1) {
+constructor(scene, key, x, y, angle = 0 scaleX = 1, scaleY = 1) {
   this.picture = key;
   this.position = { x: x, y: y };
   this.scale = { x: scaleX, y: scaleY };
-  this.angle = 0;
+  this.angle = angle;
   this.body = scene.matter.add
     .image(x, y, key)
     .setCollidesWith(0)
-    .setAngle(0)
     .setScale(scaleX, scaleY);
+    .setAngle(angle);
 
   scene.marks.push(this);
 }
@@ -479,11 +479,16 @@ setAngle(deg) {
 }
 
 setScale(x, y) {
+  this.body.setAngle(0)
   this.body.setScale(x, y);
+  this.body.setAngle(this.angle);
   this.scale = { x: x, y: y };
 }
 ```
 Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
+
+
+La fonction `setScale` nécéssite que l'élément soit à un angle 0 sinon Phaser semble ne pas fonctionner correctement et dans certains cas la zone de collision de correspond plus au visuel.
 
 (composants)=
 ## Les composants des robots
@@ -494,7 +499,6 @@ Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour
 constructor(
   scene,
   reference,
-  robotRotation,
   x,
   y,
   width,
@@ -536,14 +540,7 @@ constructor(
   this.power = 0;
   this.dir = 0;
   this.radius = height / 20;
-  this.angle = 0;
-
-  if (powToSpeed === undefined) {
-    this.powToSpeed = function (power) {
-      return power;
-    };
-  } else {
-    this.powToSpeed = powToSpeed;
+  this.angle = 0;s.powToSpeed = powToSpeed;
   }
 
   this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
@@ -571,66 +568,70 @@ this.wheel = scene.matter.add
   .gameObject(
     scene.add.rectangle(
       reference.x +
-        this.deltaOrigin * Math.cos(this.rotationOrigin + robotRotation),
+        this.deltaOrigin *
+          Math.cos(this.rotationOrigin + reference.rotation),
       reference.y +
-        this.deltaOrigin * Math.sin(this.rotationOrigin + robotRotation),
+        this.deltaOrigin *
+          Math.sin(this.rotationOrigin + reference.rotation),
       width,
       height,
       0x808080
     ),
     scene.matter.add.rectangle(
       reference.x +
-        this.deltaOrigin * Math.cos(this.rotationOrigin + robotRotation),
+        this.deltaOrigin *
+          Math.cos(this.rotationOrigin + reference.rotation),
       reference.y +
-        this.deltaOrigin * Math.sin(this.rotationOrigin + robotRotation),
+        this.deltaOrigin *
+          Math.sin(this.rotationOrigin + reference.rotation),
       width,
       height
     )
   )
-  .setRotation(robotRotation)
+  .setRotation(reference.rotation)
   .setFrictionAir(3);
 
 scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
   pointA: {
-    x: (height / 2) * Math.sin(-robotRotation),
-    y: (height / 2) * Math.cos(-robotRotation),
+    x: (height / 2) * Math.sin(-reference.rotation),
+    y: (height / 2) * Math.cos(-reference.rotation),
   },
   pointB: {
-    x: deltaPoint1 * Math.cos(rotationPoint1 + robotRotation),
-    y: deltaPoint1 * Math.sin(rotationPoint1 + robotRotation),
+    x: deltaPoint1 * Math.cos(rotationPoint1 + reference.rotation),
+    y: deltaPoint1 * Math.sin(rotationPoint1 + reference.rotation),
   },
 });
 
 scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
   pointA: {
-    x: (height / 2) * Math.sin(-robotRotation),
-    y: (height / 2) * Math.cos(-robotRotation),
+    x: (height / 2) * Math.sin(-reference.rotation),
+    y: (height / 2) * Math.cos(-reference.rotation),
   },
   pointB: {
-    x: deltaPoint2 * Math.cos(rotationPoint2 + robotRotation),
-    y: deltaPoint2 * Math.sin(rotationPoint2 + robotRotation),
+    x: deltaPoint2 * Math.cos(rotationPoint2 + reference.rotation),
+    y: deltaPoint2 * Math.sin(rotationPoint2 + reference.rotation),
   },
 });
 
 scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
   pointA: {
-    x: (height / 2) * Math.sin(robotRotation),
-    y: (-height / 2) * Math.cos(robotRotation),
+    x: (height / 2) * Math.sin(reference.rotation),
+    y: (-height / 2) * Math.cos(reference.rotation),
   },
   pointB: {
-    x: deltaPoint1 * Math.cos(rotationPoint1 + robotRotation),
-    y: deltaPoint1 * Math.sin(rotationPoint1 + robotRotation),
+    x: deltaPoint1 * Math.cos(rotationPoint1 + reference.rotation),
+    y: deltaPoint1 * Math.sin(rotationPoint1 + reference.rotation),
   },
 });
 
 scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
   pointA: {
-    x: (height / 2) * Math.sin(robotRotation),
-    y: (-height / 2) * Math.cos(robotRotation),
+    x: (height / 2) * Math.sin(reference.rotation),
+    y: (-height / 2) * Math.cos(reference.rotation),
   },
   pointB: {
-    x: deltaPoint2 * Math.cos(rotationPoint2 + robotRotation),
-    y: deltaPoint2 * Math.sin(rotationPoint2 + robotRotation),
+    x: deltaPoint2 * Math.cos(rotationPoint2 + reference.rotation),
+    y: deltaPoint2 * Math.sin(rotationPoint2 + reference.rotation),
   },
 });
 ```
@@ -738,18 +739,27 @@ isMarked() {
     if (this.scene.matter.overlap(this.ir, this.scene.marks[i].body)) {
       const mark = this.scene.marks[i];
       if (mark.picture == "geom") {
-        return StateBlack;
+        return this.StateBlack;
       }
+
+      const xAngle0 =
+          Math.cos(-(mark.angle / 180) * Math.PI) *
+            (this.ir.x - mark.position.x) -
+          Math.sin(-(mark.angle / 180) * Math.PI) *
+            (this.ir.y - mark.position.y),
+        yAngle0 =
+          Math.sin(-(mark.angle / 180) * Math.PI) *
+            (this.ir.x - mark.position.x) +
+          Math.cos(-(mark.angle / 180) * Math.PI) *
+            (this.ir.y - mark.position.y);
+
       const color = this.scene.textures.getPixel(
-        (this.ir.x - mark.position.x + (mark.body.width * mark.scale.x) / 2) /
-          mark.scale.x,
-        (this.ir.y - mark.position.y + (mark.body.width * mark.scale.y) / 2) /
-          mark.scale.y,
+        xAngle0 / mark.scale.x + mark.body.width / 2,
+        yAngle0 / mark.scale.y + mark.body.height / 2,
         mark.picture
       );
-      if (color == null) {
-      } else {
-        if (color.v < 0.2) {
+      if (color !== null) {
+        if (color.v < 0.3) {
           return this.StateBlack;
         }
       }
@@ -759,7 +769,11 @@ isMarked() {
 }
 ```
 
-La méthode contrôle pour chaque marque existant dans la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est le cas et que la clef de l'image n'est pas `geom`, ce qui signifie que l'image est un élément géométrique noir, elle obtient la couleur du pixel sur laquelle il se trouve. Il peut arriver que le pixel rechercher soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesurer qu'en son centre, si c'est le cas la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité et si cette dernère est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée sombre.
+La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est elle obtient la propriété `picture` de la marque. Dans ce cas si `picture` est égal à `geom` le programme retourne `StateBlack` car `geom` représente les marques noires. Sinon il obtient la couleur du pixel sur laquelle se trouve le capteur infrarouge.
+
+
+
+Il peut arriver que le pixel rechercher soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesurer qu'en son centre, si c'est le cas la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité et si cette dernère est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée sombre.
 
 #### La méthode `update`
 
@@ -1208,7 +1222,6 @@ constructor(scene, name, x, y, angle) {
   this.Lmotor = new motor(
     scene,
     this.body,
-    (angle / 180) * Math.PI,
     -35,
     18,
     9,
@@ -1221,7 +1234,6 @@ constructor(scene, name, x, y, angle) {
   this.Rmotor = new motor(
     scene,
     this.body,
-    (angle / 180) * Math.PI,
     35,
     18,
     9,
@@ -1292,7 +1304,6 @@ constructor(scene, name, x, y, angle) {
   this.Lmotor = new motor(
     scene,
     this.body,
-    (angle / 180) * Math.PI,
     -45,
     27,
     9,
@@ -1305,7 +1316,6 @@ constructor(scene, name, x, y, angle) {
   this.Rmotor = new motor(
     scene,
     this.body,
-    (angle / 180) * Math.PI,
     45,
     27,
     9,
@@ -1491,4 +1501,4 @@ setPosition(x, y) {
 Les méthodes `setPosition` et `setAngle` ne modifie les état que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
 
 
-[^src1]: R https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html (le 7 mars)
+[^src1]: PHOTON STORM "Class: PluginManager" Consulté le 20 février 2022 https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html (le 7 mars)
