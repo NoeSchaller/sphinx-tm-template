@@ -1,8 +1,6 @@
 # Documentation
-## Remarques préalables
+## Fonctionnement global
 
-COMMENTER LA STRUCTURE DES DOCUMENTS
-### Conventions
 Dans ce travail, les variables représentant des angles possèdent "angle" dans leur nom lorsqu'il s'agit de degrés et "rotation" s'il s'agit de radians.
 
 ## La classe simulation
@@ -64,7 +62,7 @@ class simulation {
 Ce code constitue l'intégralité de la classe simulation, les deux buts de la classe sont aisément identifiables:
 * Les lignes 11, 12 et 13 créent des listes vides dans lesquelles s'ajouteront les différent éléments lorsqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
 * Les lignes 14-46 initient l'interface Phaser en fonction des différents paramètres.
-* La ligne 18 indique à Phaser d'utiliser WEBGL plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tous les navigateurs, il est plus performant et tout de même très répandu.
+* La ligne 18 indique à Phaser d'utiliser WEBGL pour le rendu plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tous les navigateurs, il est plus performant que canvas et tout de même très répandu.
 
 
 ``` {admonition} Commentaire
@@ -773,7 +771,7 @@ La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se su
 
 
 
-Il peut arriver que le pixel rechercher soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesurer qu'en son centre, si c'est le cas la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité et si cette dernère est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée sombre.
+Il peut arriver que le pixel recherché soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesuré qu'en son centre, si c'est le cas, la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité, si cette dernière est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée noire.
 
 #### La méthode `update`
 
@@ -798,7 +796,7 @@ update() {
 }
 ```
 
-`update` sert à la fois à replacer le capteur par rapport à la référence et à actualiser son apparence e nfonction de son état.
+`update` sert à la fois à replacer le capteur par rapport à la référence et à actualiser son apparence en fonction de son état.
 
 (ultra)=
 ### Les capteurs ultrasons
@@ -812,7 +810,7 @@ constructor(scene, reference, x, y, angle = 0, range = 255, coneAngle = 60)
 * `x`: la coordonnée horizontale du capteur par rapport à `reference`
 * `y`: la coordonnée verticale du capteur par rapport à `reference`
 * `angle`:  l'angle du capteur par rapport à `reference`
-* `coneAngle`:  l'angle du cone de détection du capteur
+* `coneAngle`:  l'angle du cône de détection du capteur
 
 #### Le constructeur
 
@@ -846,7 +844,7 @@ class ultrasonicD {
   }
 ```
 
-Le contructeur crée aux lignes 11-21 un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
+Le constructeur crée aux lignes 11-21 un élément `rayCone` à l'aide d'un plugin qui permet le rayCasting
 
 ``` {admonition} Commmentaire
 ---
@@ -896,7 +894,7 @@ update() {
       this.reference.y +
       this.delta * Math.sin(this.reference.rotation + this.rotationOrigin)
     )
-    .setAngle(this.reference.rotation - Math.PI / 2 + this.angle);
+    .setAngle(this.reference.rotation - Math.PI / 2 + this.rotation);
 }
 ```
 
@@ -939,7 +937,7 @@ constructor(scene, reference, x, y, radius = 5) {
 }
 ```
 
-Les contructeurs des deux types de leds sont extrêmement similaires, la seule différence étant que les led rgb ont une propriété `color` et les autres une `on`.
+Les contructeurs des deux types de leds sont extrêmement similaires, la seule différence étant que les leds rgbs ont une propriété `color` et les autres une `on`.
 
 #### Les méthodes
 
@@ -991,7 +989,7 @@ update() {
 }
 ```
 
-Les méthodes `setOn` et `setColor` permet de changer l'état de la led, soit avec un booléen, soit avec une couleur exprimée en hexadécimal. `update` met à jour la position et l'apparence de la led.
+Les méthodes `setOn` et `setColor` permettent de changer l'état de la led, soit avec un booléen, soit avec une couleur exprimée en hexadécimal. `update` met à jour la position et l'apparence de la led.
 
 ### Les pins
 
@@ -1016,9 +1014,9 @@ class pin {
 }
 ```
 
-* `component`: l'élement auquelle appliquer `read` et `write`
-* `read`: une fonction applcable à `component`, ne prend pas d'argument
-* `write`: une fonction applcable à `component`, prend un booléen comme argument
+* `component`: l'élément auquel appliquer `read` et `write`
+* `read`: une fonction applicable à `component`, ne prend pas d'argument
+* `write`: une fonction applicable à `component`, prend un booléen comme argument
 
 ### L'élément `i2cLite`
 
@@ -1062,7 +1060,7 @@ class i2cLite {
 Le constructeur reçoit le robot que l'i2c devra modifier.
 
 
-La méthode `write` commence par vérifié que l'adresse correspond à `0x10`, ensuite elle applique différentes fonctions suivant `register` et le nombre d'octet transmis.
+La méthode `write` commence par vérifier que l'adresse corresponde à `0x10`, ensuite elle applique différentes méthodes en fonction de `register` et du nombre d'octets transmis.
 
 ### L'élément `i2cPlus`
 
@@ -1180,7 +1178,7 @@ class i2cPlus {
 Le contructeur reçoit le robot à modifier, il prépare également un buffer vide et une liste de couleurs que peuvent prendre les leds rgbs.
 
 
-La méthode `write` de la classe `i2cPlus` fonction de la même manière que `i2cLite`, il y a toutefois plus de registres disponibles. De plus certains registre ajoutent des données au buffer afin qu'elle puisse être lue par la méthode `read`. Les éléments ainsi ajoutés sont ajouté dans le seul inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin.
+La méthode `write` de la classe `i2cPlus` fonctionne de la même manière que `i2cLite`, il y a toutefois plus de registres disponibles. De plus certains registres ajoutent des données au buffer afin qu'elles puisse être lue par la méthode `read`. Les éléments ainsi ajoutés sont ajoutés dans le sens inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin du buffer.
 
 ## Les robots
 
@@ -1354,10 +1352,10 @@ constructor(scene, name, x, y, angle) {
 }
 ```
 
-L'élement `body` est une sprite qui utilise l'image `liteBodyPic` comme apparence et dont la forme est stockées dans le document JSON qui possède la clé `liteShape`.
+L'élement `body` est un sprite qui utilise l'image `liteBodyPic` comme apparence et dont la forme est stockée dans le document JSON qui possède la clé `liteShape`.
 
 
-La fonction `speedGrowth` a été trouvée par mesure, ces mesures se trouvent en annexe.
+Les fonctions `speedGrowth` a été trouvée par mesures.
 
 ### Les méthodes
 
@@ -1498,7 +1496,7 @@ setPosition(x, y) {
 }
 ```
 
-Les méthodes `setPosition` et `setAngle` ne modifie les état que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
+Les méthodes `setPosition` et `setAngle` ne modifient les états que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
 
 
 [^src1]: PHOTON STORM "Class: PluginManager" Consulté le 20 février 2022 https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html (le 7 mars)

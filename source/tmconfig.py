@@ -5,10 +5,10 @@ class TMConfig:
     last_name = 'Schaller'
     author = f'{first_name} {last_name}'
     year = u'2022'
-    month = u'Janvier'
+    month = u'Avril'
     seminary_title = u'Développement d’outils ou matériel d’enseignement de l’informatique'
     tutor = u"Cédric Donner"
-    release = "Version intermédiaire"
+    release = "version finale"
     repository_url = "https://github.com/NoeSchaller/TM_Noe"
 
     @classmethod
