@@ -1,5 +1,8 @@
 # Mode d'emploi pour le professeur
 ## Mise en place
+
+Tout les documents nécéssaire à la mise en place de la simulation sont disponibles dans la branche `main` du dépot github dédié à ce travail[^git]. Pour pouvoir utiliser le simulateur il suffit de télécherger tout les documents du dossier `TM_code` puis d'ajouter au code HTML de la page les fichiers `phaser.js`, `rayCasting.js` et `MaqueenSimulation.js` dans cet ordre. Il est également important de les ajouter à la fin du ficher HTML afin d'être sûr que l'élément `canvas` dans lequel la simulation est créer existe lorsque le script est exécuté. Il faut également être attentif à laisser le dossier `assets` dans le même document que `MaqueenSimulation.js`. Une fois ces étape effectuée il est possible d'initialiser la simulation.
+
 ### La classe simulation
 Tout comme Phaser, la simulation repose principalement sur une seule et unique classe: la classe simulation. Lancer la simulation ne nécessite donc que d'appeler celle-ci avec les bons paramètres.
 ```{code-block} js
@@ -255,7 +258,7 @@ sim.robot[0].getDistance()
 
 ### le Macqueen Plus
 
-Toutes les fonctionnalités du Macqueen plus sont contrôlables via l'i2c. Les fonctions `i2c.write` ajoutent des données au buffer qui sont ensuite accessibles grâce à la méthode `i2c.read`. Le maqueen plus possède également une méthode `getDistance` qui permet d'utiliser le capteur ultrason.
+Toutes les fonctionnalités du Macqueen plus sont contrôlables via l'i2c. Les fonctions `i2c.write` ajoutent des données au buffer[^glo] qui sont ensuite accessibles grâce à la méthode `i2c.read`. Le maqueen plus possède également une méthode `getDistance` qui permet d'utiliser le capteur ultrason.
 
 #### La méthode `i2c.write`
 
@@ -269,11 +272,11 @@ sim.robot[1].i2c.write(adresse, [register, byte1, byte2, ...])
 
 | Registre    | Effet    | Octet | Octet(s) ajouté au buffer |
 | :--- | :--- | :--- | :--- |
-| `0x00 `    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
-  | `0x02 ` | voir Maqueen lite | - | `dirR`, `powerR` |
-| `0x0b ` | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | Aucun |
-| `0x0c ` | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
-| `0x1d ` | Aucun | Aucun | Un octet dont l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteur le plus à droite et le premier le plus à gauche) |
+| 0x00    | voir Maqueen lite | - | `dirL`, `powerL`, `dirR`, `powerR` |
+  | 0x02 | voir Maqueen lite | - | `dirR`, `powerR` |
+| 0x0b | change la couleur de la led rgb gauche et de la droite si 2 octet sont inserés | Un nombre entre 1 et 8 (1 = rouge, 2 = vert, 3 = jaune, 4 = bleu, 5 = rose, 6 = cyan, 7 = blanc, 8 = éteint) | Aucun |
+| 0x0c | change la couleur de la led rbg droite | voir `0x0b` | Aucun |
+| 0x1d | Aucun | Aucun | Un octet dont l'état d'un bit représente l'état d'un capteur infrarouge (le sixième représente le capteur le plus à droite et le premier le plus à gauche) |
 
 #### La méthode `i2c.read`
 
@@ -295,6 +298,11 @@ Une fois les éléments mis en place, il est possible d'en modifier certains par
 
 | Méthode | Paramètre | Effet | Applicable à | Exemple |
 | :--- | :--- | :--- | :--- | :--- |
-| `setPosition(x, y)    ` | `x` et `y`: des coordonées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
-| `setAngle(deg)    ` | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
-|`setScale(x, y)    `| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
+| setPosition(x, y) | `x` et `y`: des coordonées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
+| setAngle(deg) | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
+|setScale(x, y)| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
+
+
+
+[^git]: https://github.com/NoeSchaller/TM_Noe
+[^glo]: voir {ref}`glossaire<glo>`

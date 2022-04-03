@@ -1,12 +1,6 @@
 écrit :
-    conclusion
-    readme (mise en place de l'API)
-
-    .mettre la déclaration
-    .add.constraint
-    .glossaire
-    . checker tableaux
 
 code:
     .....ajouter class zone
     .....ajout de méthode à simulation
+    .....ajouter wallPic ???

@@ -152,7 +152,7 @@ create() {
 }
 ```
 
-Le permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
+Le permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting[^glo] quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
 
 ### La fonction update
 
@@ -634,13 +634,24 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
 });
 ```
 
-L'élément `wheel` est créé des lignes 1 à 22, puis est attaché à `reference` depuis `point1` et `point2` à l'aide de 4 éléments `constraint` afin de former une structure rigide.
+L'élément `wheel` est créé des lignes 1 à 22, puis est attaché à `reference` depuis `point1` et `point2` à l'aide de 4 éléments `constraint`[^src2] afin de former une structure rigide.
 
 ```{image} ./figures/constraint.png
 :alt: constraint
 :width: 100px
 :align: center
 ```
+``` {code-block} js
+---
+caption: Les éléments Phaser `constraint` s'ajoutent ainsi:
+---
+scene.matter.add.contraint(bodyA, bodyB, length, stiffness, options)
+```
+* `bodyA`: le premier objet auquel attacher la contrainte
+* `bodyB`: le second objet auquel attacher la contrainte
+* `length`: la longueur de la contrainte
+* `stiffness`: la rigidité de la contrainte
+* `options`: des options diverses, voir documentation[^src2]
 
 #### La méthode `setSpeed`
 
@@ -813,6 +824,8 @@ constructor(scene, reference, x, y, angle = 0, range = 255, coneAngle = 60)
 * `coneAngle`:  l'angle du cône de détection du capteur
 
 #### Le constructeur
+
+Pour mieux comprendre le fonctionnement du plugin utilisé pour simuler les capteurs ultrason, il est nécessaire de se référer à la documentation du plugin.[^ray]
 
 ``` {code-block} js
 ---
@@ -1175,7 +1188,7 @@ class i2cPlus {
 }
 ```
 
-Le contructeur reçoit le robot à modifier, il prépare également un buffer vide et une liste de couleurs que peuvent prendre les leds rgbs.
+Le contructeur reçoit le robot à modifier, il prépare également un buffer[^glo] vide et une liste de couleurs que peuvent prendre les leds rgbs.
 
 
 La méthode `write` de la classe `i2cPlus` fonctionne de la même manière que `i2cLite`, il y a toutefois plus de registres disponibles. De plus certains registres ajoutent des données au buffer afin qu'elles puisse être lue par la méthode `read`. Les éléments ainsi ajoutés sont ajoutés dans le sens inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin du buffer.
@@ -1499,4 +1512,7 @@ setPosition(x, y) {
 Les méthodes `setPosition` et `setAngle` ne modifient les états que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
 
 
-[^src1]: PHOTON STORM "Class: PluginManager" Consulté le 20 février 2022 https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html (le 7 mars)
+[^src1]: PHOTON STORM "Class: PluginManager" Consulté le 07 mars 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html>>
+[^src2]: PHOTON STORM "Member of: Phaser.Physics.Matter.Factory" Consulté le 03 avril 2022 <<https://newdocs.phaser.io/docs/3.54.0/focus/Phaser.Physics.Matter.Factory-constraint>>
+[^ray]: WISERIM "Phaser Raycaster" Consulté le 18 novembre 2021 <<https://github.com/wiserim/phaser-raycaster>>
+[^glo]: voir {ref}`glossaire<glo>`

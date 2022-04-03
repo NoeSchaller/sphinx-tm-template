@@ -1,15 +1,13 @@
+(glo)=
 # Glossaire
 
 - Buffer: Une mémoire tampon qui sert à stocké temporairement des données
-- i2c:
-- Led rgb:
-- objet Phaser
-- Raycasting:
-- Sprite: 
+- Raycasting: le raycasting consiste à créer un rayon depuis un point de départ et à chercher sont point d'intersection avec d'autre élément de la scène[^ray]
+- Sprite: un sprite est un élément graphique qui peut être animé. Dans Phaser un sprite peut avoit une zone de collision qui n'est pas un rectangle contrairement aux images.
 - Zone de collision: La zone de collision ou hitbox en anglais représente une zone qui va provoquer les interactions avec d'autre objet lorsque leur zone de collision respective se superposent ou se touchent.
 
 
-
+[^glo] = voir {ref}`glossaire<glo>`
 
 # Webographie
 
@@ -22,10 +20,12 @@
 - PHOTON STORM "Namespace: GameObjects" Consulté le 7 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.html>>
 - PHOTON STORM "Namespace: Geom" Consulté le 10 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Geom.html>>
 - PHOTON STORM "Namespace: Components"  Consulté le 10 janvier 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.html>>
+- PHOTON STORM "Member of: Phaser.Physics.Matter.Factory" Consulté le 03 avril 2022 <<https://newdocs.phaser.io/docs/3.54.0/focus/Phaser.Physics.Matter.Factory-constraint>>
+- LODE VANDEVENNE "Lode's Computer Graphics Tutorial" Consulté le 03 arvil 2022 <<https://lodev.org/cgtutor/raycasting.html>>
+- WISERIM "Phaser Raycaster" Consulté le 18 novembre 2021 <<https://github.com/wiserim/phaser-raycaster>>
 
 # Annexes
 ## Code
-
 ``` {code-block} js
 ---
 caption: l'intégralité du document `MaqueenSimulation.js` qui contient tout le code
@@ -1161,3 +1161,10 @@ class wallCircle {
 ```
 
 ## Déclaration sur l'honneur
+
+```{image} ./figures/declaration_tm.png
+:alt: declaration
+:align: center
+```
+
+[^ray]: LODE VANDEVENNE "Lode's Computer Graphics Tutorial" Consulté le 03 arvil 2022 <<https://lodev.org/cgtutor/raycasting.html>>
