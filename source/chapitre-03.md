@@ -1225,7 +1225,7 @@ constructor(scene, name, x, y, angle) {
     .setAngle(angle);
 
   //mise en place des moteurs
-  const speedGrowth = function (power) {
+  let speedGrowth = function (power) {
     return (
       -9e-9 * power ** 4 +
       7e-6 * power ** 3 -
@@ -1308,7 +1308,7 @@ constructor(scene, name, x, y, angle) {
     .setAngle(angle);
 
   //mise en place des moteurs
-  const speedGrowth = function (power) {
+  let speedGrowth = function (power) {
     return (
       -1e-8 * power ** 4 +
       1e-5 * power ** 3 -
