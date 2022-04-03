@@ -1,7 +1,15 @@
 # Documentation
 ## Fonctionnement global
 
-Dans ce travail, les variables représentant des angles possèdent "angle" dans leur nom lorsqu'il s'agit de degrés et "rotation" s'il s'agit de radians.
+L'architecture du programme repose sur la classe simulation: une fois celle-ci initialisée, la scène `simulation` est lancée. Celle-ci lance la scène `overlay` et exécute la fonction `mapCreate` qui met en place les éléments.
+
+```{image} ./figures/mapJs.png
+:alt: schéma
+:align: center
+
+La structure du code
+
+```
 
 ## La classe simulation
 La classe `simulation` constitue le cœur du simulateur. Cette classe a deux fonctions principales: elle crée l'interface graphique dans lequel se déroule la simulation et elle regroupe les principaux éléments de celle-ci afin de rendre accessibles leur différentes méthodes.
