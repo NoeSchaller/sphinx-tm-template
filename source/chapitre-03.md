@@ -65,9 +65,9 @@ class simulation {
 
 ```
 Ce code constitue l'intégralité de la classe simulation, les deux buts de la classe sont aisément identifiables:
-* Les lignes 11, 12 et 13 créent des listes vides dans lesquelles s'ajouteront les différent éléments lorsqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
+* Les lignes 11, 12 et 13 créent des listes vides dans lesquelles s'ajouteront les différents éléments lorsqu'ils seront créés. Ces listes permettent d'accéder et de modifier ces éléments simplement.
 * Les lignes 14-46 initient l'interface Phaser en fonction des différents paramètres.
-* La ligne 18 indique à Phaser d'utiliser WEBGL pour le rendu plutôt que canvas. Ce choix à été fait car même si WEBGL n'est pas supporté par tous les navigateurs, il est plus performant que canvas et tout de même très répandu.
+* La ligne 18 indique à Phaser d'utiliser WebGL pour le rendu plutôt que Canvas. Ce choix à été fait car même si WebGL n'est pas supporté par tous les navigateurs, il est plus performant que Canvas et tout de même très répandu.
 
 
 ``` {admonition} Commentaire
@@ -84,7 +84,7 @@ Les lignes 37-45 mettent en place un plugin qui servira à simuler les capteurs 
 
 ## La scène principale
 
-La première scène lancée par Phaser est la scène `Simul`. Comme cette scène met en place l'environemment du robot, il est donc logique que les autres scènes démarrent après pour qu'elle puissent s'adapter aux éléments déjà en place.
+La première scène lancée par Phaser est la scène `Simul`. Comme cette scène met en place l'environnement du robot, il est logique que les autres scènes démarrent après, pour qu'elle puissent s'adapter aux éléments déjà en place.
 
 ### Le contructeur
 
@@ -112,7 +112,7 @@ Le contructeur de la scène s'occupe simplement de recevoir et stocker les diff�
 
 ### La fonction preload
 
-La fonction preload charge les ressources nécéssaires pour les robots et les éventuelles ressources utiles à l'utilisateur.
+La fonction preload charge les ressources nécessaires pour les robots et les éventuelles ressources utiles à l'utilisateur.
 
 ``` {code-block} js
 ---
@@ -135,8 +135,8 @@ preload() {
 }
 ```
 
-Le programme charge des documents JSON qui contiennent les informations quant à la forme des zones de collisions des robots aux lignes 2 et 3 ainsi que des sprites pour leur aspect visuel.
-`mapLoad` est également exécutée et charge les fichiers utiles à l'utilisateur avec comme argument la scène principale de la simulation.
+Le programme charge des documents JSON qui contiennent les informations quant à la forme des zones de collisions des robots aux lignes 2 et 3, ainsi que des sprites pour leur aspect visuel.
+La fonction `mapLoad` est également exécutée et charge les fichiers utiles à l'utilisateur avec comme argument la scène principale de la simulation.
 
 ### La fonction create
 
@@ -157,7 +157,7 @@ create() {
 }
 ```
 
-Le permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting[^glo] quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
+La permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting[^glo] quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
 
 ### La fonction update
 
@@ -178,7 +178,7 @@ Les lignes 2 à 4 du code parcourent la liste des robots et la ligne 3 actualise
 
 ## La scène overlay
 
-La scène `overlay` a pour objectif la gestion de la caméra et des boutons qui permet de la manipuler. La création d'une scène dédiée à cet usage est essentielle car elle permet d'éviter d'avoir des interactions indésirables entre les éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter à l'interface de se déplacer en même temps que la caméra, puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
+La scène `overlay` a pour objectif la gestion de la caméra et des boutons qui permettent de la manipuler. La création d'une scène dédiée à cet usage est essentielle car elle permet d'éviter d'avoir des interactions indésirables entre les éléments de l'interface et ceux de la simulation. La création d'une deuxième scène permet également d'éviter à l'interface de se déplacer en même temps que la caméra, puisque chaque scène possède sa propre caméra et que seule celle de la simulation est déplacée.
 
 ### Le constructeur
 
@@ -219,7 +219,7 @@ this.scene.launch("overlay", [this.robots, this.cameras.main]);
 ```
 
 Cette ligne sert à initialiser la scène `overlay` depuis une autre scène, le second argument est transmis à la fonction `init`.
-La fonction `init` est donc essentielle car elle permet à la scène `overlay` de s'adapter au éléments présents dans la simulation. Dans ce cas, la fonction reçoit la liste des robots et la caméra de la scène principale.
+La fonction `init` est donc essentielle car elle permet à la scène `overlay` de s'adapter aux éléments présents dans la simulation. Dans ce cas, la fonction reçoit la liste des robots et la caméra de la scène principale.
 
 ### La fonction preload
 
@@ -459,7 +459,7 @@ constructor(scene, key, x, y, angle = 0 scaleX = 1, scaleY = 1) {
 ```
 ---
 
-Les constructeurs des différentes classes ne remplissent que deux objectifs: le premier est de créer un object Phaser rectangulaire statique en fonction des paramètres introduit par l'utilisateur, le second est de s'ajouter à la liste leur correspondant afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image, `picture` représente alors la clef de l'image source (voir {ref}`les capteurs infrarouges<infra>`). Les éléments décrivant un mur ajoute également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détectés par les capteurs infrarouges.
+Les constructeurs des différentes classes ne remplissent que deux objectifs: le premier est de créer un objet Phaser rectangulaire statique en fonction des paramètres introduits par l'utilisateur, le second est de s'ajouter à la liste leur correspondant afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image, `picture` représente alors la clef de l'image source (voir {ref}`les capteurs infrarouges<infra>`). Les éléments décrivant un mur ajoutent également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détectés par les capteurs infrarouges.
 
 ``` {admonition} Remarque
 ---
@@ -491,7 +491,7 @@ setScale(x, y) {
 Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
 
 
-La fonction `setScale` nécéssite que l'élément soit à un angle 0 sinon Phaser semble ne pas fonctionner correctement et dans certains cas la zone de collision de correspond plus au visuel.
+La fonction `setScale` nécessite que l'élément soit à un angle 0, sinon Phaser semble ne pas fonctionner correctement et, dans certains, cas la zone ne collision de correspond plus au visuel.
 
 (composants)=
 ## Les composants des robots
@@ -556,7 +556,7 @@ constructor(
    rotationPoint2 = Math.atan2(point2.y, point2.x);
 ```
 
-Les éléments `delta` représentent la distance l'origine de `reference` et l'objet.
+Les éléments `delta` représentent la distance, l'origine de `reference` et l'objet.
 
 
 Les éléments `rotation` représentent les angles par rapport à l'horizontal.
@@ -639,7 +639,7 @@ scene.matter.add.constraint(this.wheel, reference, undefined, 1, {
 });
 ```
 
-L'élément `wheel` est créé des lignes 1 à 22, puis est attaché à `reference` depuis `point1` et `point2` à l'aide de 4 éléments `constraint`[^src2] afin de former une structure rigide.
+L'élément `wheel` est créé des lignes 1 à 22, puis est attaché à `reference` depuis `point1` et `point2` à l'aide de 4 éléments `constraint` afin de former une structure rigide.
 
 ```{image} ./figures/constraint.png
 :alt: constraint
@@ -683,7 +683,7 @@ setSpeed(dir, power) {
 }
 ```
 
-Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètres en nombres utilisables par Phaser, il a été trouvé de manière expérimentale.
+Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètres en nombres utilisables par Phaser, il a été determiné de manière expérimentale.
 
 #### La méthode `update`
 
@@ -712,10 +712,10 @@ update() {
 }
 ```
 
-La méthode `update` commence par calculer la vitesse de rotation du moteur. Les objects Phaser possèdent une propriété `speed` mais celle-ci ne semble pas être opérationnelle, en effet elle augmente lorsque le robot bute contre un obstacle.
+La méthode `update` commence par calculer la vitesse de rotation du moteur. Les objects Phaser possèdent une propriété `speed` mais celle-ci ne semble pas être opérationnelle. En effet, elle augmente lorsque le robot bute contre un obstacle.
 
 
-Ensuite la méthode fait avancer la roue en fonction de la vitesse.
+Ensuite, la méthode fait avancer la roue en fonction de la vitesse.
 
 (infra)=
 ### Les capteurs infrarouges
@@ -783,11 +783,11 @@ isMarked() {
 }
 ```
 
-La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est elle obtient la propriété `picture` de la marque. Dans ce cas si `picture` est égal à `geom` le programme retourne `StateBlack` car `geom` représente les marques noires. Sinon il obtient la couleur du pixel sur laquelle se trouve le capteur infrarouge.
+La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est le cas elle obtient la propriété `picture` de la marque. Dans ce cas, si `picture` est égal à `geom` le programme retourne `StateBlack`, car `geom` représente les marques noires. Sinon, il obtient la couleur du pixel sur laquelle se trouve le capteur infrarouge.
 
 
 
-Il peut arriver que le pixel recherché soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesuré qu'en son centre, si c'est le cas, la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité, si cette dernière est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée noire.
+Il peut arriver que le pixel recherché soit en dehors de l'image car la zone de collision du capteur est un cercle et que le pixel n'est mesuré qu'en son centre. Si c'est le cas, la couleur est égale `null` ce qui est interprété comme une absence de marque. Si la couleur n'est pas `null`, sa propriété `v` représente sa luminosité. Si cette dernière est inférieure à 0.3 qui est un coefficient choisit arbitrairement, la couleur est considérée comme noire.
 
 #### La méthode `update`
 
@@ -896,7 +896,7 @@ getDistance() {
 }
 ```
 
-Dans ce code `intersections` est une  liste de points d'intersections entre le capteur et les éléments de `RaycasterDomain`. La distance entre ces points et le capteur est calculée des lignes 5 à 10. Elle est ensuite ajoutée à `distances`, seul la plus petite distance est retenue à la ligne 11.
+Dans ce code `intersections` est une  liste de points d'intersections entre le capteur et les éléments de `RaycasterDomain`. La distance entre ces points et le capteur est calculée des lignes 5 à 10. Elle est ensuite ajoutée à `distances`. Seule la plus petite distance est retenue à la ligne 11.
 
 #### La méthode `update`
 
@@ -1193,10 +1193,10 @@ class i2cPlus {
 }
 ```
 
-Le contructeur reçoit le robot à modifier, il prépare également un buffer[^glo] vide et une liste de couleurs que peuvent prendre les leds rgbs.
+Le contructeur reçoit le robot à modifier, il prépare également un buffer[^glo2] vide et une liste de couleurs que peuvent prendre les leds rgbs.
 
 
-La méthode `write` de la classe `i2cPlus` fonctionne de la même manière que `i2cLite`, il y a toutefois plus de registres disponibles. De plus certains registres ajoutent des données au buffer afin qu'elles puisse être lue par la méthode `read`. Les éléments ainsi ajoutés sont ajoutés dans le sens inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin du buffer.
+La méthode `write` de la classe `i2cPlus` fonctionne de la même manière que `i2cLite`. Il y a toutefois plus de registres disponibles. De plus certains registres ajoutent des données au buffer afin qu'elles puissent être lues par la méthode `read`. Les éléments ainsi ajoutés sont ajoutés dans le sens inverse qu'ils seront lus puisque `i2c.read` lit les octets depuis la fin du buffer.
 
 ## Les robots
 
@@ -1207,7 +1207,7 @@ Le code des robots est relativement simple puisqu'il ne fait que mettre en place
 ``` {code-block} js
 ---
 linenos: true
-caption: le constructeur du maqueen Lite
+caption: le constructeur du Maqueen Lite
 ---
 constructor(scene, name, x, y, angle) {
   //mise  en place de variables
@@ -1225,7 +1225,7 @@ constructor(scene, name, x, y, angle) {
     .setAngle(angle);
 
   //mise en place des moteurs
-  let speedGrowth = function (power) {
+  const speedGrowth = function (power) {
     return (
       -9e-9 * power ** 4 +
       7e-6 * power ** 3 -
@@ -1290,7 +1290,7 @@ constructor(scene, name, x, y, angle) {
 ``` {code-block} js
 ---
 linenos: true
-caption: le constructeur du maqueen Plus
+caption: le constructeur du Maqueen Plus
 ---
 constructor(scene, name, x, y, angle) {
   //mise  en place de variables
@@ -1308,7 +1308,7 @@ constructor(scene, name, x, y, angle) {
     .setAngle(angle);
 
   //mise en place des moteurs
-  let speedGrowth = function (power) {
+  const speedGrowth = function (power) {
     return (
       -1e-8 * power ** 4 +
       1e-5 * power ** 3 -
@@ -1373,14 +1373,14 @@ constructor(scene, name, x, y, angle) {
 L'élement `body` est un sprite qui utilise l'image `liteBodyPic` comme apparence et dont la forme est stockée dans le document JSON qui possède la clé `liteShape`.
 
 
-Les fonctions `speedGrowth` a été trouvée par mesures.
+Les fonctions `speedGrowth` ont été trouvées par mesures.
 
 ### Les méthodes
 
 ``` {code-block} js
 ---
 linenos: true
-caption: les méthodes du maqueen Lite
+caption: les méthodes du Maqueen Lite
 ---
 getDistance() {
   return this.ultrasonic.getDistance();
@@ -1446,7 +1446,7 @@ setAngle(deg) {
 ``` {code-block} js
 ---
 linenos: true
-caption: les méthodes du maqueen Plus
+caption: les méthodes du Maqueen Plus
 ---
 getDistance(){
   return this.ultrasonic.getDistance();
@@ -1514,10 +1514,11 @@ setPosition(x, y) {
 }
 ```
 
-Les méthodes `setPosition` et `setAngle` ne modifient les états que des éléments `body` et les deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
+Les méthodes `setPosition` et `setAngle` ne modifient les états que des éléments `body` et des deux moteurs. Les autres éléments se replacent eux-mêmes dans leur méthode `update`
 
 
 [^src1]: PHOTON STORM "Class: PluginManager" Consulté le 07 mars 2022 <<https://photonstorm.github.io/phaser3-docs/Phaser.Plugins.PluginManager.html>>
 [^src2]: PHOTON STORM "Member of: Phaser.Physics.Matter.Factory" Consulté le 03 avril 2022 <<https://newdocs.phaser.io/docs/3.54.0/focus/Phaser.Physics.Matter.Factory-constraint>>
 [^ray]: WISERIM "Phaser Raycaster" Consulté le 18 novembre 2021 <<https://github.com/wiserim/phaser-raycaster>>
 [^glo]: voir {ref}`glossaire<glo>`
+[^glo2]: voir {ref}`glossaire<glo>`
