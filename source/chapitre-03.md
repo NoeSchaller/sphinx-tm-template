@@ -3,12 +3,9 @@
 
 L'architecture du programme repose sur la classe simulation: une fois celle-ci initialisée, la scène `simulation` est lancée. Celle-ci lance la scène `overlay` et exécute la fonction `mapCreate` qui met en place les éléments.
 
-```{image} ./figures/mapJs.png
+```{image} ./figures/graf.png
 :alt: schéma
 :align: center
-
-La structure du code
-
 ```
 
 ## La classe simulation
