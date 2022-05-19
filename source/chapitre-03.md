@@ -77,9 +77,9 @@ class: note
 Les lignes 20-29 créent les différentes scènes utilisées et leur donnent certains paramètres essentiels. Il faut toutefois noter que seule la scène `Simul` démarre et que les autres seront lancées depuis celle-ci.
 
 Les lignes 37-45 mettent en place un plugin qui servira à simuler les capteurs ultrason des robots:
-* La ligne 41 assigne une clé de référence au plugin
-* La ligne 42 indique le plugin
-* La ligne 43 indique à Phaser la manière de mettre en place le plugin
+* La ligne 40 assigne une clé de référence au plugin
+* La ligne 41 indique le plugin
+* La ligne 42 indique à Phaser la manière de mettre en place le plugin
 ```
 
 ## La scène principale
@@ -157,7 +157,7 @@ create() {
 }
 ```
 
-La permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting[^glo] quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec comme argument la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
+La permière ligne crée une liste qui sera complétée lorsque les éléments seront créés, cette liste sert à indiquer au plugin de raycasting[^glo] quels éléments il doit considérer (voir {ref}`le capteur ultrason<ultra>`). La ligne 4 appelle la fonction `mapCreate` avec, comme argument, la scène principale de la simulation. La ligne 6 lance la scène nommée  `overlay`. Le second argument, `[this.robots, this.cameras.main]`, de la commande correspond à des données que la scène `simulation` passe à `overlay`
 
 ### La fonction update
 
@@ -459,7 +459,7 @@ constructor(scene, key, x, y, angle = 0 scaleX = 1, scaleY = 1) {
 ```
 ---
 
-Les constructeurs des différentes classes ne remplissent que deux objectifs: le premier est de créer un objet Phaser rectangulaire statique en fonction des paramètres introduits par l'utilisateur, le second est de s'ajouter à la liste leur correspondant afin d'être accessible facilement.  Additionnellement, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image, `picture` représente alors la clef de l'image source (voir {ref}`les capteurs infrarouges<infra>`). Les éléments décrivant un mur ajoutent également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détectés par les capteurs infrarouges.
+Les constructeurs des différentes classes ne remplissent que deux objectifs: le premier est de créer un objet Phaser rectangulaire statique en fonction des paramètres introduits par l'utilisateur, le second est de s'ajouter à la liste leur correspondant afin d'être accessible facilement.  De plus, les classes définissant des marques possèdent un attribut `picture` qui permet au capteurs infrarouges d'identifier si la marque qu'il survole est une image ou non. Si c'est une image, `picture` représente alors la clef de l'image source (voir {ref}`les capteurs infrarouges<infra>`). Les éléments décrivant un mur ajoutent également leur objet Phaser `body` à `scene.RaycasterDomain` car ce sont ces éléments qui seront détectés par les capteurs infrarouges.
 
 ``` {admonition} Remarque
 ---
@@ -488,14 +488,14 @@ setScale(x, y) {
   this.scale = { x: x, y: y };
 }
 ```
-Les méthodes des éléments sont de simple extensions de méthodes Phaser, pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
+Les méthodes des éléments sont de simple extensions de méthodes Phaser. Pour cette raison un code parfaitement similaire est utilisé pour tous les éléments.
 
 
 La fonction `setScale` nécessite que l'élément soit à un angle 0, sinon Phaser semble ne pas fonctionner correctement et, dans certains, cas la zone ne collision de correspond plus au visuel.
 
 (composants)=
 ## Les composants des robots
-### La classe motor
+### La classe `motor`
 #### Le constructeur
 ##### Explication des paramètres
 ``` {code-block} js
@@ -517,8 +517,8 @@ constructor(
 * `y`: la coordonée en y de la roue par rapport à la position de `reference`
 * `width`: la largeur de la roue en pixel
 * `height`: la hauteur de la roue en pixel
-* `point1`: un objet Javascript ayant une clef x et y, il représente un point sur reference pour y attacher la roue
-* `point2`: un objet Javascript ayant une clef x et y, il représente un point sur reference pour y attacher la roue
+* `point1`: un objet Javascript ayant une clef x et y, il représente un point sur `reference` pour y attacher la roue
+* `point2`: un objet Javascript ayant une clef x et y, il représente un point sur `reference` pour y attacher la roue
 * `powToSpeed`: une fonction qui représente la croissance de la vitesse angulaire de la roue en fonction de la puissance
 
 #### Explications des paramètres calculés
@@ -543,7 +543,8 @@ constructor(
   this.power = 0;
   this.dir = 0;
   this.radius = height / 20;
-  this.angle = 0;s.powToSpeed = powToSpeed;
+  this.angle = 0;
+  this.powToSpeed = powToSpeed;
   }
 
   this.deltaOrigin = Math.sqrt(x ** 2 + y ** 2);
@@ -683,7 +684,7 @@ setSpeed(dir, power) {
 }
 ```
 
-Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètres en nombres utilisables par Phaser, il a été determiné de manière expérimentale.
+Cette méthode applique la fonction `powToSpeed` à `power` puis l'applique en accord avec `dir` si le résultat est plus grand que 0. Le facteur 12 / 100  permet de convertir la vitesse de centimètres en nombres utilisables par Phaser. Il a été determiné de manière expérimentale.
 
 #### La méthode `update`
 
@@ -783,7 +784,7 @@ isMarked() {
 }
 ```
 
-La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est le cas elle obtient la propriété `picture` de la marque. Dans ce cas, si `picture` est égal à `geom` le programme retourne `StateBlack`, car `geom` représente les marques noires. Sinon, il obtient la couleur du pixel sur laquelle se trouve le capteur infrarouge.
+La méthode contrôle pour chaque marque de la liste `scene.marks` si elle se superpose avec le capteur infrarouge. Si c'est le cas elle obtient la propriété `picture` de la marque. Dans ce cas, si `picture` est égal à "`geom`" le programme retourne `StateBlack`, car "`geom`" représente les marques noires. Sinon, il obtient la couleur du pixel sur laquelle se trouve le capteur infrarouge.
 
 
 
@@ -896,7 +897,7 @@ getDistance() {
 }
 ```
 
-Dans ce code `intersections` est une  liste de points d'intersections entre le capteur et les éléments de `RaycasterDomain`. La distance entre ces points et le capteur est calculée des lignes 5 à 10. Elle est ensuite ajoutée à `distances`. Seule la plus petite distance est retenue à la ligne 11.
+Dans ce code `intersections` est une  liste de points d'intersection entre le capteur et les éléments de `RaycasterDomain`. La distance entre ces points et le capteur est calculée des lignes 5 à 10. Elle est ensuite ajoutée à `distances`. Seule la plus petite distance est retenue à la ligne 11.
 
 #### La méthode `update`
 
@@ -1078,7 +1079,7 @@ class i2cLite {
 Le constructeur reçoit le robot que l'i2c devra modifier.
 
 
-La méthode `write` commence par vérifier que l'adresse corresponde à `0x10`, ensuite elle applique différentes méthodes en fonction de `register` et du nombre d'octets transmis.
+La méthode `write` commence par vérifier que l'adresse corresponde à `0x10`. Ensuite, elle applique différentes méthodes en fonction de `register` et du nombre d'octets transmis.
 
 ### L'élément `i2cPlus`
 

@@ -4,7 +4,7 @@
 - Buffer: Une mémoire tampon qui sert à stocker temporairement des données
 - Raycasting: Le raycasting consiste à créer une droite depuis un point de départ et à chercher son point d'intersection avec d'autre élément de la scène[^ray].
 - Sprite: Un sprite est un élément graphique qui peut être animé. Dans Phaser un sprite peut avoit une zone de collision qui n'est pas un rectangle, contrairement aux images.
-- Zone de collision: La zone de collision ou hitbox en anglais représente une zone qui va provoquer les interactions avec d'autres objets, lorsque leurs zones de collision respective se superposent ou se touchent.
+- Zone de collision: La zone de collision, ou hitbox, en anglais représente une zone qui va provoquer les interactions avec d'autres objets, lorsque leur zone de collision respective se superposent ou se touchent.
 
 # Webographie
 

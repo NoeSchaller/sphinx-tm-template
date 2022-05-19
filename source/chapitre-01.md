@@ -2,7 +2,7 @@
 Phaser est un logiciel open source développé et maintenu par Photon Storm depuis 2013. Il permet de créer des interfaces graphiques 2D (principalement des jeux) et de coder leurs interactions avec l'utilisateur dans un environnement HTML5. Il est toutefois également possible de l'utiliser sur Android et IOS mais cela nécessite que le code soit préalablement compilé. Le programme peut être utilisé à l'aide de Javascript et de Typescript. La version 3.0.0 est disponible depuis début 2018 et mon travail utilise la version 3.55.2. Phaser dipose également d'un grand nombre de plugins mis à disposition par sa communauté. [^src1][^src2]
 
 ## La classe Game
-La racine de Phaser est la classe `Game`, il s'agit de la classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe `Game` pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique objet qui sera le seul paramètre de Game. L'utilisation d'un objet à la place de plusieurs paramètres distincts a pour but de rendre ce processus plus simple et intuitif. En effet, dans un objet, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres). Les différentes clés permettent de choisir principalement la manière dont l'interface sera ajoutée à l'ensemble de la page, ainsi que certaines configurations de base telles que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées par Phaser[^src4].
+Le coeur de Phaser est la classe `Game`. Il s'agit de la classe qui va créer l'interface graphique selon les paramètres qui lui sont fournis puis l'actualiser.[^src3] La classe `Game` pouvant recevoir de nombreux paramètres, tous ceux-ci sont regroupés par l'utilisateur dans un unique objet qui sera le seul paramètre de Game. L'utilisation d'un objet à la place de plusieurs paramètres distincts a pour but de rendre ce processus plus simple et intuitif. En effet, dans un objet, l'ordre des clés n'a pas d'importance (contrairement à l'utilisation de multiples paramètres). Les différentes clés permettent de choisir principalement la manière dont l'interface sera ajoutée à l'ensemble de la page, ainsi que certaines configurations de base telles que le moteur physique ou les plugins utilisés. Toutes les clés disponibles  qu'il est possible d'utiliser sont documentées par Phaser[^src4].
 
 ```{code-block} js
 ---
@@ -65,7 +65,7 @@ Il est également possible de modifier des paramètres physiques basiques de cet
 ```
 
 ## Les scènes
-Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins 4 fonctions: `constructor`, `preload`, `create` et `update`: 
+Une scène est un groupe d'objets et de caméras qui sont traités ensemble par Phaser. Une scène se définit à partir d'au moins quatre méthodes: `constructor`, `preload`, `create` et `update`: 
 1. La fonction `preload` charge les ressources spécifiées dans la mémoire vive de l'ordinateur afin que le reste du programme soit aussi fluide que possible.
 2. La fonction `create` met en place les objets et variables nécessaires à la scène qui lui correspond.
 3. La fonction `update` est exécutée en boucle afin d'actualiser la scène.
@@ -116,20 +116,20 @@ game = new Phaser.Game(config)
 ---
 class: info
 ---
-Ce code crée un jeu avec une scène vide, il est également possible d'en ajouter plusieurs. `Super()` sert à donner une clé de référence à la scène.
-On peut dès lors faire référence à la scène de la manière suivante: game.scene.keys.scene1
+Ce code crée un jeu avec une scène vide. Il est également possible d'en ajouter plusieurs. `super()` sert à donner une clé de référence à la scène.
+On peut dès lors faire référence à la scène de la manière suivante: `game.scene.keys.scene1`
 ```
 ```{admonition} Avertissement
 ---
 class: warning
 ---
-La majeure partie du code sera dès maintenant sous-entendu afin de pouvoir rester concis et mettre en évidence l'essentiel.  
+La majeure partie du code sera dès maintenant sous-entendue afin de pouvoir rester concis et mettre en évidence l'essentiel.  
 * Les fonctions `preload`, `create` et `update` ne seront mentionnées que si elles contiennent du code.  
 * Les élements `class Scene1 extends Phaser.Scene`, `game = new Phaser.Game(config)`, le constructeur et la variable `config` ne seront pas répétés, car ils ne subissent généralement pas de changements majeurs.
 ```
-Chaque scène est traitée de manière complètement indépendante par Phaser. Elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeur de notre simulateur. Par exemple, mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs. De plus, comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robot se déplace [^src5].
-
-La gestion des scènes se fait dans les scènes elles-mêmes, Phaser lance systématiquement la première scène de la liste lorsqu'il démarre. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (voir documentation[^src6])
+Chaque scène est traitée de manière complètement indépendante par Phaser. Elles sont donc utilisées pour représenter divers états ainsi que différents niveaux de profondeur de notre simulateur. Par exemple, mon travail utilise deux scènes superposées lors de la simulation : une sert de monde simulé et une autre sert pour les boutons qui gèrent la caméra. De cette manière, les boutons ne génèrent pas de collisions avec les robots ou les murs. De plus, comme chaque scène a sa propre caméra, l'interface qui permet de gérer le point de vue reste en place même lorsque le robot se déplace [^src5]. La gestion des scènes se fait dans les scènes elles-mêmes.
+ 
+Phaser lance systématiquement la première scène de la liste lorsqu'il démarre. Depuis là, Phaser met à diposition des commandes qui permettent de gérer les scènes qui sont actives ou non, celles qui s'actualisent et, si plusieurs sont actives à la fois, la manière dont elles se superposent. (voir documentation[^src6])
 
 ## Les objets
 Les objets de Phaser sont les seuls élements en dehors de l'arrière-fond qui apparaissent à l'écran et c'est avec eux que l'utilisateur peut interagir. Ils ont donc des formes et des utilisations extrêmement variées et il est donc essentiel d'en maîtriser l'usage.
@@ -143,7 +143,7 @@ caption: Création d'un objet
             y = 300,
             width = 100,
             height = 100,
-            color = 0x00ff00
+            color = 0x00ff00;
 
         this.add.rectangle(x, y, width, height, color)
     };
@@ -205,7 +205,7 @@ Certains objets comme les images et les sprites sont basés sur des documents ex
 ---
 caption: Par exemple
 ---
-this.load.image("key", "path")
+this.load.image(key, path)
 ```
 
 Cette commande utilise les paramètres suivants:  
@@ -244,7 +244,7 @@ create(){
 };
 ```
 
-Dans ce code, les lignes 3 et 4 ont exactement un effet semblable: changer la coordonnée x du rectangle en 500.  
+Dans ce code, les lignes 3 et 4 ont le même effet: changer la coordonnée x du rectangle en 500.  
 Même s'il est toujours possible d'utiliser les deux manières, il existe cependant certaines situations dans lesquelles la seconde méthode est plus agréable. La différence reste toutefois légère mais peut être plus marquée dans un code plus complexe.
 
 

@@ -1,7 +1,7 @@
 # Mode d'emploi pour le professeur
 ## Mise en place
 
-Tout les documents nécessaire à la mise en place de la simulation sont disponibles dans la branche `main` du dépot github dédié à ce travail[^git]. Pour pouvoir utiliser le simulateur, il suffit de télécharger tous les documents du dossier `TM_code` puis d'ajouter au code HTML de la page les fichiers `phaser.js`, `rayCasting.js` et `MaqueenSimulation.js` dans cet ordre. Il est également important de les ajouter à la fin du fichier HTML afin d'être sûr que l'élément `canvas` dans lequel la simulation est créée existe lorsque le script est exécuté. Il faut également être attentif à laisser le dossier `assets` dans le même document que `MaqueenSimulation.js`. Une fois ces étapes effectuées, il est possible d'initialiser la simulation.
+Tous les documents nécessaires à la mise en place de la simulation sont disponibles dans la branche `main` du dépot github dédié à ce travail[^git]. Pour pouvoir utiliser le simulateur, il suffit de télécharger tous les documents du dossier `TM_code` puis d'ajouter au code HTML de la page les fichiers `phaser.js`, `rayCasting.js` et `MaqueenSimulation.js` dans cet ordre. Il est également important de les ajouter à la fin du fichier HTML afin d'être sûr que l'élément `canvas` dans lequel la simulation est créée existe lorsque le script est exécuté. Il faut également être attentif à laisser le dossier `assets` dans le même document que `MaqueenSimulation.js`. Une fois ces étapes effectuées, il est possible d'initialiser la simulation.
 
 ### La classe simulation
 Tout comme Phaser, la simulation repose principalement sur une seule et unique classe: la classe simulation. Lancer la simulation ne nécessite donc que d'appeler celle-ci avec les bons paramètres.
@@ -14,7 +14,7 @@ sim = new simulation(width, height, id, mapLoad, marCreate, background)
 * `mapCreate`: une fonction qui permet de mettre en place l'environnement.
 * `background`: une couleur exprimée en hexadécimal qui définit l'aspect du fond de la simulation. Si rien n'est spécifié, le fond est beige.
 
-### Les fonctions mapLoad et mapCreate
+### Les fonctions `mapLoad` et `mapCreate`
 Les fonctions `mapLoad` et `mapCreate` sont les fonctions qui permettent de placer les différents éléments dans la simulation. Chaque fonction correspond à un état de la scène: `load` et `create`. Elles possèdent chacune un argument qui leur permet de recevoir la scène principale de la simulation afin qu'elles puissent interagir avec:
 
 ``` {code-block} js
@@ -27,7 +27,7 @@ function mapCreate(scene) {
 
 Les prochains paragraphes présentent les utilisations possibles de ces fonctions. Il est toutefois important de savoir que n'importe quelle instruction reconnue par Phaser peut y être exécutée.
 
-#### la fonction mapLoad
+#### La fonction mapLoad
 
  La fonction `mapLoad` a pour but de charger des images afin de les afficher avec la fonction `mapCreate`.
 
@@ -41,7 +41,7 @@ function mapLoad(scene) {
 }
 ```
 
-#### la fonction mapCreate
+#### La fonction mapCreate
 
 La fonction `mapCreate` permet d'ajouter les éléments initiaux à la simulation. Chaque élément est ajouté grâce à une classe spécifique:
 
@@ -129,7 +129,7 @@ Dès lors, il est possible de choisir le point de vue de celle-ci à l'aide des 
 * Les boutons gris en-dessous pour choisir quel robot est suivi par la caméra
 * Le bouton "Free" laisse l'utilisateur déplacer la caméra lui-même à l'aide des flèches directionnelles
 ```
-À partir de là, l'utilisateur peut user des robots créés comme il le souhaite à l'aide des commandes détaillées ci-dessous.
+À partir de là, l'utilisateur peut utiliser les robots créés comme il le souhaite à l'aide des commandes détaillées ci-dessous.
 
 ``` {code-block} js
 ---
@@ -185,7 +185,7 @@ Dans cet exemple ainsi que tous les suivants, on suppose que la simulation est a
 
 ### Le Maqueen Lite
 #### L'i2c
-L'i2c permet donc de contrôler les moteurs du robot. L'objet possède une seule fonction
+L'i2c permet de contrôler les moteurs du robot. L'objet possède une seule fonction
 
 ```{code-block} js
 sim.robot.i2c.write(adresse, [register, dir1, power1, dir2, power2])
@@ -219,7 +219,7 @@ Ce code fait avancer le moteur gauche à une puissance de 200 et reculer le mote
 ```
 
 #### Les pins
-Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui ont un caractère binaire, chaque pin est associé à un capteur ou un actuateur.
+Les robots possèdent plusieurs pins qui prennent en charge la gestion des données qui ont un caractère binaire. Chaque pin est associé à un capteur ou un actuateur.
 
 | Pin | Capteur/Actuateur |
 | :--- | :--- |
@@ -230,8 +230,8 @@ Les robots possèdent plusieurs pins qui prennent en charge la gestion des donn�
 
 
 Chaque pin est doté de deux fonctions, l'une pour modifier son état et l'autre pour le lire.
-* `read_digital()`: retourne un booléen qui représente l'état actuel de l'actuateur ou du capteur
-* `write_digital(bool)`: prend en paramètre un booléen qui modifie l'état de l'actuateur (ou du capteur)  
+* `read_digital()`: retourne un booléen qui représente l'état actuel du capteur
+* `write_digital(bool)`: prend en paramètre un booléen qui modifie l'état de l'actuateur 
 
 ```{code-block} js
 ---
@@ -299,7 +299,7 @@ Une fois les éléments mis en place, il est possible d'en modifier certains par
 
 | Méthode | Paramètre | Effet | Applicable à | Exemple |
 | :--- | :--- | :--- | :--- | :--- |
-| setPosition(x, y) | `x` et `y`: des coordonnées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
+| setPosition(x, y) | `x` et `y`: les coordonnées | Modifie l'emplacement de l'objet | Marques, murs, robots | `sim.robots[0].setPosition(200, 450)` |
 | setAngle(deg) | `deg`: un angle en degrés | Modifie l'angle de l'objet | Marques, murs, robots | `sim.walls[1].setAngle(90)` |
 |setScale(x, y)| `x` et`y`: l'échelle de l'objet par rapport à sa taille originale| Modifie la taille de l'objet | Marques, murs | `sim.marks[2].setScale(2, 3)` |
 
